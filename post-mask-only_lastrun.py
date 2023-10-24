@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2023.2.3),
-    on October 23, 2023, at 17:13
+    on 十月 24, 2023, at 14:30
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -113,7 +113,7 @@ def setupData(expInfo, dataDir=None):
     thisExp = data.ExperimentHandler(
         name=expName, version='',
         extraInfo=expInfo, runtimeInfo=None,
-        originPath='C:\\Users\\NING\\Documents\\python_works\\unconfeat_MEEG\\post-mask-only_lastrun.py',
+        originPath='C:\\Users\\Administrator\\Documents\\python_works\\unconfeat_MEEG\\post-mask-only_lastrun.py',
         savePickle=True, saveWideText=True,
         dataFileName=dataDir + os.sep + filename, sortColumns='time'
     )
@@ -459,7 +459,6 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     # --- Prepare to start Routine "setupTRIGetc" ---
     continueRoutine = True
     # update component parameters for each repeat
-    thisExp.addData('setupTRIGetc.started', globalClock.getTime())
     # Run 'Begin Routine' code from setup_vbles_trigger
     msg.draw()
     win.flip()
@@ -520,14 +519,12 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     for thisComponent in setupTRIGetcComponents:
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
-    thisExp.addData('setupTRIGetc.stopped', globalClock.getTime())
     # the Routine "setupTRIGetc" was not non-slip safe, so reset the non-slip timer
     routineTimer.reset()
     
     # --- Prepare to start Routine "introduction" ---
     continueRoutine = True
     # update component parameters for each repeat
-    thisExp.addData('introduction.started', globalClock.getTime())
     # keep track of which components have finished
     introductionComponents = [description_of_experiment, global_fixation]
     for thisComponent in introductionComponents:
@@ -643,7 +640,6 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     for thisComponent in introductionComponents:
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
-    thisExp.addData('introduction.stopped', globalClock.getTime())
     # using non-slip timing so subtract the expected duration of this Routine (unless ended on request)
     if routineForceEnded:
         routineTimer.reset()
@@ -653,7 +649,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     # set up handler to look after randomisation of conditions etc
     trials = data.TrialHandler(nReps=1, method='random', 
         extraInfo=expInfo, originPath=-1,
-        trialList=data.importConditions('living-nonliving-0.csv'),
+        trialList=data.importConditions('dataframes/face-house-6.csv'),
         seed=12345, name='trials')
     thisExp.addLoop(trials)  # add the loop to the experiment
     thisTrial = trials.trialList[0]  # so we can initialise stimuli with some values
@@ -1488,7 +1484,6 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     # --- Prepare to start Routine "End_experiment" ---
     continueRoutine = True
     # update component parameters for each repeat
-    thisExp.addData('End_experiment.started', globalClock.getTime())
     # keep track of which components have finished
     End_experimentComponents = [The_End]
     for thisComponent in End_experimentComponents:
@@ -1571,7 +1566,6 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     for thisComponent in End_experimentComponents:
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
-    thisExp.addData('End_experiment.stopped', globalClock.getTime())
     # using non-slip timing so subtract the expected duration of this Routine (unless ended on request)
     if routineForceEnded:
         routineTimer.reset()
