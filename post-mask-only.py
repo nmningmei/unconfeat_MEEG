@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2023.2.3),
-    on 十月 24, 2023, at 10:26
+    on 十月 24, 2023, at 18:25
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -649,7 +649,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     # set up handler to look after randomisation of conditions etc
     trials = data.TrialHandler(nReps=1, method='random', 
         extraInfo=expInfo, originPath=-1,
-        trialList=data.importConditions('temp.csv'),
+        trialList=data.importConditions('dataframes/face-house-6.csv'),
         seed=12345, name='trials')
     thisExp.addLoop(trials)  # add the loop to the experiment
     thisTrial = trials.trialList[0]  # so we can initialise stimuli with some values

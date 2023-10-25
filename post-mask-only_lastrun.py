@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2023.2.3),
-    on 十月 24, 2023, at 14:30
+    on 十月 25, 2023, at 13:42
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -40,12 +40,11 @@ _thisDir = os.path.dirname(os.path.abspath(__file__))
 psychopyVersion = '2023.2.3'
 expName = 'post-mask-only'  # from the Builder filename that created this script
 expInfo = {
-    'n_square': '32',
-    'probeFrames': '5',
-    'participant': '',
+    'n_square': '64',
+    'probeFrames': '1',
+    'participant': '1',
     'session': '001',
-    'image_size': '256',
-    'premask_dur': '20',
+    'image_size': '300',
     'postmask_dur': '20',
     'block': '1',
     'date': data.getDateStr(),  # add a simple timestamp
@@ -325,8 +324,8 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     curr=int(expInfo['probeFrames'])
     count=0
     
-    n_total = 32
-    premask_dur = float(expInfo['premask_dur'])
+    #n_total = 32
+    #premask_dur = float(expInfo['premask_dur'])
     postmask_dur = float(expInfo['postmask_dur'])
     session = int(expInfo['session'])
     block = int(expInfo['block'])
@@ -366,6 +365,13 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         color=[1,1,1], colorSpace='rgb', opacity=1,
         flipHoriz=False, flipVert=False,
         texRes=128, interpolate=True, depth=-1.0)
+    blank = visual.TextStim(win=win, name='blank',
+        text=None,
+        font='Open Sans',
+        pos=(0, 0), height=0.05, wrapWidth=None, ori=0.0, 
+        color='white', colorSpace='rgb', opacity=None, 
+        languageStyle='LTR',
+        depth=-2.0);
     
     # --- Initialize components for Routine "postmask" ---
     postmask_1 = visual.GratingStim(
@@ -377,16 +383,6 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         texRes=128, interpolate=False, depth=0.0)
     
     # --- Initialize components for Routine "jitter_delay" ---
-    # Run 'Begin Experiment' code from pick_jitter_delay_duration
-    jit_count = 0
-    
-    jitter_dur_options = np.concatenate([[1.0]*16,
-    [1.5]*8,
-    [2.0]*4,
-    [2.5]*2,
-    [3.0]*2]) 
-    
-    np.random.shuffle(jitter_dur_options)
     delay_post_mask = visual.TextStim(win=win, name='delay_post_mask',
         text='+',
         font='Arial',
@@ -425,13 +421,6 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         depth=0.0);
     # Run 'Begin Experiment' code from pick_post_fixation_duration
     
-    jitter2_dur_options = np.concatenate([[1.0]*16,
-    [1.5]*8,
-    [2.0]*4,
-    [2.5]*2,
-    [3.0]*2]) 
-    
-    np.random.shuffle(jitter2_dur_options)
     
     
     # --- Initialize components for Routine "show_message" ---
@@ -558,8 +547,6 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
             description_of_experiment.tStart = t  # local t and not account for scr refresh
             description_of_experiment.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(description_of_experiment, 'tStartRefresh')  # time at next scr refresh
-            # add timestamp to datafile
-            thisExp.timestampOnFlip(win, 'description_of_experiment.started')
             # update status
             description_of_experiment.status = STARTED
             description_of_experiment.setAutoDraw(True)
@@ -576,8 +563,6 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
                 # keep track of stop time/frame for later
                 description_of_experiment.tStop = t  # not accounting for scr refresh
                 description_of_experiment.frameNStop = frameN  # exact frame index
-                # add timestamp to datafile
-                thisExp.timestampOnFlip(win, 'description_of_experiment.stopped')
                 # update status
                 description_of_experiment.status = FINISHED
                 description_of_experiment.setAutoDraw(False)
@@ -591,8 +576,6 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
             global_fixation.tStart = t  # local t and not account for scr refresh
             global_fixation.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(global_fixation, 'tStartRefresh')  # time at next scr refresh
-            # add timestamp to datafile
-            thisExp.timestampOnFlip(win, 'global_fixation.started')
             # update status
             global_fixation.status = STARTED
             global_fixation.setAutoDraw(True)
@@ -609,8 +592,6 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
                 # keep track of stop time/frame for later
                 global_fixation.tStop = t  # not accounting for scr refresh
                 global_fixation.frameNStop = frameN  # exact frame index
-                # add timestamp to datafile
-                thisExp.timestampOnFlip(win, 'global_fixation.stopped')
                 # update status
                 global_fixation.status = FINISHED
                 global_fixation.setAutoDraw(False)
@@ -649,7 +630,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     # set up handler to look after randomisation of conditions etc
     trials = data.TrialHandler(nReps=1, method='random', 
         extraInfo=expInfo, originPath=-1,
-        trialList=data.importConditions('dataframes/face-house-6.csv'),
+        trialList=data.importConditions('dataframes/face-house-0.csv'),
         seed=12345, name='trials')
     thisExp.addLoop(trials)  # add the loop to the experiment
     thisTrial = trials.trialList[0]  # so we can initialise stimuli with some values
@@ -684,7 +665,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         
         probe.setImage(image_name)
         # keep track of which components have finished
-        probe_routineComponents = [probe]
+        probe_routineComponents = [probe, blank]
         for thisComponent in probe_routineComponents:
             thisComponent.tStart = None
             thisComponent.tStop = None
@@ -710,7 +691,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
             # *probe* updates
             
             # if probe is starting this frame...
-            if probe.status == NOT_STARTED and frameN >= 0.0:
+            if probe.status == NOT_STARTED and blank.status == FINISHED:
                 # keep track of start time/frame for later
                 probe.frameNStart = frameN  # exact frame index
                 probe.tStart = t  # local t and not account for scr refresh
@@ -738,6 +719,39 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
                     # update status
                     probe.status = FINISHED
                     probe.setAutoDraw(False)
+            
+            # *blank* updates
+            
+            # if blank is starting this frame...
+            if blank.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+                # keep track of start time/frame for later
+                blank.frameNStart = frameN  # exact frame index
+                blank.tStart = t  # local t and not account for scr refresh
+                blank.tStartRefresh = tThisFlipGlobal  # on global time
+                win.timeOnFlip(blank, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'blank.started')
+                # update status
+                blank.status = STARTED
+                blank.setAutoDraw(True)
+            
+            # if blank is active this frame...
+            if blank.status == STARTED:
+                # update params
+                pass
+            
+            # if blank is stopping this frame...
+            if blank.status == STARTED:
+                # is it time to stop? (based on global clock, using actual start)
+                if tThisFlipGlobal > blank.tStartRefresh + np.random.uniform(0.5,1,size = 1)[0]-frameTolerance:
+                    # keep track of stop time/frame for later
+                    blank.tStop = t  # not accounting for scr refresh
+                    blank.frameNStop = frameN  # exact frame index
+                    # add timestamp to datafile
+                    thisExp.timestampOnFlip(win, 'blank.stopped')
+                    # update status
+                    blank.status = FINISHED
+                    blank.setAutoDraw(False)
             
             # check for quit (typically the Esc key)
             if defaultKeyboard.getKeys(keyList=["escape"]):
@@ -865,7 +879,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         # Run 'Begin Routine' code from pick_jitter_delay_duration
         
         
-        jitter_delay_dur=jitter_dur_options[jit_count]#first is jit1_count 0
+        jitter_delay_dur=np.random.choice([1,1.5,2,2.5,3],size = 1,)[0]#first is jit1_count 0
         
         trials.addData("jitter1", jitter_delay_dur)
         # keep track of which components have finished
@@ -1304,11 +1318,10 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         thisExp.addData('post_trial_jitter.started', globalClock.getTime())
         # Run 'Begin Routine' code from pick_post_fixation_duration
         
-        jitter2_delay_dur=jitter2_dur_options[jit_count]#first is jit1_count 0
+        jitter2_delay_dur=np.random.choice([2,2.5,3,3.5],size = 1)[0]#first is jit1_count 0
         
         trials.addData("jitter2", jitter2_delay_dur)
         
-        jit_count+=1
         # keep track of which components have finished
         post_trial_jitterComponents = [post_fixation]
         for thisComponent in post_trial_jitterComponents:
@@ -1517,8 +1530,6 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
             The_End.tStart = t  # local t and not account for scr refresh
             The_End.tStartRefresh = tThisFlipGlobal  # on global time
             win.timeOnFlip(The_End, 'tStartRefresh')  # time at next scr refresh
-            # add timestamp to datafile
-            thisExp.timestampOnFlip(win, 'The_End.started')
             # update status
             The_End.status = STARTED
             The_End.setAutoDraw(True)
@@ -1535,8 +1546,6 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
                 # keep track of stop time/frame for later
                 The_End.tStop = t  # not accounting for scr refresh
                 The_End.frameNStop = frameN  # exact frame index
-                # add timestamp to datafile
-                thisExp.timestampOnFlip(win, 'The_End.stopped')
                 # update status
                 The_End.status = FINISHED
                 The_End.setAutoDraw(False)
