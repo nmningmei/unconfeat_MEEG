@@ -435,6 +435,31 @@
         <Param val="False" valType="bool" updates="None" name="disabled"/>
         <Param val="code" valType="code" updates="None" name="name"/>
       </CodeComponent>
+      <TextComponent name="preblank" plugin="None">
+        <Param val="white" valType="color" updates="constant" name="color"/>
+        <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
+        <Param val="1" valType="num" updates="constant" name="contrast"/>
+        <Param val="False" valType="bool" updates="None" name="disabled"/>
+        <Param val="" valType="code" updates="None" name="durationEstim"/>
+        <Param val="None" valType="str" updates="constant" name="flip"/>
+        <Param val="Open Sans" valType="str" updates="constant" name="font"/>
+        <Param val="LTR" valType="str" updates="None" name="languageStyle"/>
+        <Param val="0.05" valType="num" updates="constant" name="letterHeight"/>
+        <Param val="preblank" valType="code" updates="None" name="name"/>
+        <Param val="" valType="num" updates="constant" name="opacity"/>
+        <Param val="0" valType="num" updates="constant" name="ori"/>
+        <Param val="(0, 0)" valType="list" updates="constant" name="pos"/>
+        <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
+        <Param val="" valType="code" updates="None" name="startEstim"/>
+        <Param val="time (s)" valType="str" updates="None" name="startType"/>
+        <Param val="0.0" valType="code" updates="None" name="startVal"/>
+        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
+        <Param val="$np.random.choice([0.5,1],size = 1)[0]" valType="code" updates="constant" name="stopVal"/>
+        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
+        <Param val="" valType="str" updates="constant" name="text"/>
+        <Param val="from exp settings" valType="str" updates="None" name="units"/>
+        <Param val="" valType="num" updates="constant" name="wrapWidth"/>
+      </TextComponent>
       <ImageComponent name="probe" plugin="None">
         <Param val="center" valType="str" updates="constant" name="anchor"/>
         <Param val="$[1,1,1]" valType="str" updates="constant" name="color"/>
@@ -462,31 +487,27 @@
         <Param val="128" valType="code" updates="constant" name="texture resolution"/>
         <Param val="pix" valType="str" updates="None" name="units"/>
       </ImageComponent>
-      <TextComponent name="preblank" plugin="None">
-        <Param val="white" valType="color" updates="constant" name="color"/>
-        <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
-        <Param val="1" valType="num" updates="constant" name="contrast"/>
+      <SerialOutComponent name="trigger_probe" plugin="None">
+        <Param val="9600" valType="int" updates="None" name="baudrate"/>
+        <Param val="8" valType="int" updates="None" name="bytesize"/>
         <Param val="False" valType="bool" updates="None" name="disabled"/>
         <Param val="" valType="code" updates="None" name="durationEstim"/>
-        <Param val="None" valType="str" updates="constant" name="flip"/>
-        <Param val="Open Sans" valType="str" updates="constant" name="font"/>
-        <Param val="LTR" valType="str" updates="None" name="languageStyle"/>
-        <Param val="0.05" valType="num" updates="constant" name="letterHeight"/>
-        <Param val="preblank" valType="code" updates="None" name="name"/>
-        <Param val="" valType="num" updates="constant" name="opacity"/>
-        <Param val="0" valType="num" updates="constant" name="ori"/>
-        <Param val="(0, 0)" valType="list" updates="constant" name="pos"/>
+        <Param val="False" valType="bool" updates="None" name="getResponse"/>
+        <Param val="trigger_probe" valType="code" updates="None" name="name"/>
+        <Param val="N" valType="str" updates="None" name="parity"/>
+        <Param val="COM1" valType="str" updates="None" name="port"/>
         <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
         <Param val="" valType="code" updates="None" name="startEstim"/>
-        <Param val="time (s)" valType="str" updates="None" name="startType"/>
-        <Param val="0.0" valType="code" updates="None" name="startVal"/>
+        <Param val="condition" valType="str" updates="None" name="startType"/>
+        <Param val="$preblank.status == FINISHED" valType="code" updates="None" name="startVal"/>
+        <Param val="$chr(8)" valType="str" updates="None" name="startdata"/>
         <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
-        <Param val="$np.random.choice([0.5,1],size = 1)[0]" valType="code" updates="constant" name="stopVal"/>
+        <Param val="1.0" valType="code" updates="constant" name="stopVal"/>
+        <Param val="1" valType="int" updates="None" name="stopbits"/>
+        <Param val="0" valType="str" updates="None" name="stopdata"/>
         <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
-        <Param val="" valType="str" updates="constant" name="text"/>
-        <Param val="from exp settings" valType="str" updates="None" name="units"/>
-        <Param val="" valType="num" updates="constant" name="wrapWidth"/>
-      </TextComponent>
+        <Param val="" valType="int" updates="None" name="timeout"/>
+      </SerialOutComponent>
       <TextComponent name="postblank" plugin="None">
         <Param val="white" valType="color" updates="constant" name="color"/>
         <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
@@ -564,8 +585,8 @@
         <Param val="Auto-&gt;JS" valType="str" updates="None" name="Code Type"/>
         <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
         <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
-        <Param val="print(globalClock.getTime() - startTime)&amp;#10;print(&quot;mean unconscious = {:.2f}, frame = {}, p(correct) = {:.2f}&quot;.format(&amp;#10;    meanvis,curr,meanacc))" valType="extendedCode" updates="constant" name="End Experiment"/>
-        <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
+        <Param val="print(globalClock.getTime() - startTime)&amp;#10;#print(&quot;mean unconscious = {:.2f}, frame = {}, p(correct) = {:.2f}&quot;.format(&amp;#10;#    meanvis,curr,meanacc))" valType="extendedCode" updates="constant" name="End Experiment"/>
+        <Param val="console.log((globalClock.getTime() - startTime));&amp;#10;" valType="extendedCode" updates="constant" name="End JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
         <Param val="" valType="extendedCode" updates="constant" name="End Routine"/>
         <Param val="False" valType="bool" updates="None" name="disabled"/>
@@ -591,10 +612,10 @@
       <CodeComponent name="setup_vbles_trigger" plugin="None">
         <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
-        <Param val="#curr=int(expInfo['probeFrames'])&amp;#10;count=0&amp;#10;&amp;#10;#n_total = 32&amp;#10;#premask_dur = float(expInfo['premask_dur'])&amp;#10;#postmask_dur = float(expInfo['postmask_dur'])&amp;#10;#session = int(expInfo['session'])&amp;#10;#block = int(expInfo['block'])&amp;#10;#n_square = int(expInfo['n_square'])&amp;#10;image_size = int(expInfo['image_size'])&amp;#10;&amp;#10;import time&amp;#10;from psychopy import parallel &amp;#10;parallel.setPortAddress(888)&amp;#10;wait_msg = &quot;Waiting for Scanner...&quot;&amp;#10;msg = visual.TextStim(win, color = 'DarkGray', text = wait_msg)&amp;#10;&amp;#10;" valType="extendedCode" updates="constant" name="Begin Experiment"/>
-        <Param val="import * as time from 'time';&amp;#10;import {parallel} from 'psychopy';&amp;#10;count = 0;&amp;#10;image_size = Number.parseInt(expInfo[&quot;image_size&quot;]);&amp;#10;parallel.setPortAddress(888);&amp;#10;wait_msg = &quot;Waiting for Scanner...&quot;;&amp;#10;msg = new visual.TextStim(psychoJS.window, {&quot;color&quot;: &quot;DarkGray&quot;, &quot;text&quot;: wait_msg});&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
-        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
-        <Param val="msg.draw()&amp;#10;win.flip()&amp;#10;&amp;#10;while True:&amp;#10;    if (parallel.readPin(10) == 1) or (event.getKeys() == ['q']):&amp;#10;        break&amp;#10;    else:&amp;#10;        time.sleep(0.0001) # give 1ms to other processes&amp;#10;globalClock.reset()&amp;#10;startTime = globalClock.getTime() " valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="#curr=int(expInfo['probeFrames'])&amp;#10;count=0&amp;#10;&amp;#10;#n_total = 32&amp;#10;#premask_dur = float(expInfo['premask_dur'])&amp;#10;#postmask_dur = float(expInfo['postmask_dur'])&amp;#10;#session = int(expInfo['session'])&amp;#10;#block = int(expInfo['block'])&amp;#10;#n_square = int(expInfo['n_square'])&amp;#10;image_size = int(expInfo['image_size'])&amp;#10;&amp;#10;import time&amp;#10;#from psychopy import parallel &amp;#10;#parallel.setPortAddress(888)&amp;#10;#wait_msg = &quot;Waiting for Scanner...&quot;&amp;#10;#msg = visual.TextStim(win, color = 'DarkGray', text = wait_msg)&amp;#10;&amp;#10;" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="import * as time from 'time';&amp;#10;count = 0;&amp;#10;image_size = Number.parseInt(expInfo[&quot;image_size&quot;]);&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="psychoJS.window.flip();&amp;#10;globalClock.reset();&amp;#10;startTime = globalClock.getTime();&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="#msg.draw()&amp;#10;win.flip()&amp;#10;&amp;#10;#while True:&amp;#10;#    if (parallel.readPin(10) == 1) or (event.getKeys() == ['q']):&amp;#10;#        break&amp;#10;#    else:&amp;#10;#        time.sleep(0.0001) # give 1ms to other processes&amp;#10;globalClock.reset()&amp;#10;startTime = globalClock.getTime() " valType="extendedCode" updates="constant" name="Begin Routine"/>
         <Param val="Auto-&gt;JS" valType="str" updates="None" name="Code Type"/>
         <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
         <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>

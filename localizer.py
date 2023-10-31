@@ -1,8 +1,8 @@
-﻿#!/usr/bin/env python
+ #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2023.2.3),
-    on 十月 31, 2023, at 15:01
+    on 十月 31, 2023, at 15:07
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -108,7 +108,7 @@ def setupData(expInfo, dataDir=None):
     thisExp = data.ExperimentHandler(
         name=expName, version='',
         extraInfo=expInfo, runtimeInfo=None,
-        originPath='C:\\Users\\Administrator\\Documents\\python_works\\unconfeat_MEEG\\localizer_lastrun.py',
+        originPath='C:\\Users\\Administrator\\Documents\\python_works\\unconfeat_MEEG\\localizer.py',
         savePickle=True, saveWideText=True,
         dataFileName=dataDir + os.sep + filename, sortColumns='time'
     )
@@ -728,7 +728,6 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
                 trigger_probe.status = STARTED
                 win.callOnFlip(trigger_probe.write, bytes(chr(8), 'utf8'))
                 trigger_probe.status = STARTED
-                trials.addData('trigger_probe.startResp', trigger_probe.read())
             
             # if trigger_probe is stopping this frame...
             if trigger_probe.status == STARTED:
@@ -743,7 +742,6 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
                     trigger_probe.status = FINISHED
                     win.callOnFlip(trigger_probe.write, bytes('0', 'utf8'))
                     trigger_probe.status = FINISHED
-                    trials.addData('trigger_probe.stopResp', trigger_probe.read())
             
             # *postblank* updates
             
