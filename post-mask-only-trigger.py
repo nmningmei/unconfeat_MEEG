@@ -742,6 +742,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
                 win.timeOnFlip(probe, 'tStartRefresh')  # time at next scr refresh
                 # add timestamp to datafile
                 thisExp.timestampOnFlip(win, 'probe.started')
+                thisExp.timestampOnFlip(win, 'trigger.started')
                 # update status
                 probe.status = STARTED
                 probe.setAutoDraw(True)
@@ -760,6 +761,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
                     probe.frameNStop = frameN  # exact frame index
                     # add timestamp to datafile
                     thisExp.timestampOnFlip(win, 'probe.stopped')
+                    thisExp.timestampOnFlip(win, 'trigger.stopped')
                     # update status
                     probe.status = FINISHED
                     probe.setAutoDraw(False)
