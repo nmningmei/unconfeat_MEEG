@@ -52,7 +52,7 @@ def proc(image,idx,reference_im):
     im = Image.fromarray(imarray)
     im = im.filter(ImageFilter.GaussianBlur(4))
     scramble_im = scramble_im.filter(ImageFilter.GaussianBlur(4))
-    blended = Image.blend(im,scramble_im,alpha = .5)
+    blended = Image.blend(im,scramble_im,alpha = .55)
     
     temp = image.replace('\\','/').split('/')
     
@@ -71,9 +71,11 @@ if __name__ == "__main__":
     os.mkdir(os.path.join(new_folder,'face'))
     os.mkdir(os.path.join(new_folder,'house'))
     
-    reference_im = Image.open(np.random.choice(images,size = 1)[0]).convert("L").convert("RGB")
+    reference_im = Image.open(np.random.choice(images,size = 1)[0]
+                              ).convert("L").convert("RGB")
     
     
     for image in images:
         _ = Parallel(n_jobs = -1,verbose = 1)(delayed(proc)(**{'image':image,'idx':idx,
-                                                               'reference_im':reference_im}) for idx in range(26))
+                                                               'reference_im':reference_im}
+                                                            ) for idx in range(26))

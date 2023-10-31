@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2023.2.3),
-    on 十月 25, 2023, at 13:42
+    on 十月 31, 2023, at 11:01
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -43,9 +43,9 @@ expInfo = {
     'n_square': '64',
     'probeFrames': '1',
     'participant': '1',
-    'session': '001',
     'image_size': '300',
     'postmask_dur': '20',
+    'session': '1',
     'block': '1',
     'date': data.getDateStr(),  # add a simple timestamp
     'expName': expName,
@@ -630,7 +630,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     # set up handler to look after randomisation of conditions etc
     trials = data.TrialHandler(nReps=1, method='random', 
         extraInfo=expInfo, originPath=-1,
-        trialList=data.importConditions('dataframes/face-house-0.csv'),
+        trialList=data.importConditions(f"dataframes/face-house-{session}{block}.csv"),
         seed=12345, name='trials')
     thisExp.addLoop(trials)  # add the loop to the experiment
     thisTrial = trials.trialList[0]  # so we can initialise stimuli with some values
@@ -743,7 +743,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
             # if blank is stopping this frame...
             if blank.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > blank.tStartRefresh + np.random.uniform(0.5,1,size = 1)[0]-frameTolerance:
+                if tThisFlipGlobal > blank.tStartRefresh + np.random.choice([0.5,1],size = 1)[0]-frameTolerance:
                     # keep track of stop time/frame for later
                     blank.tStop = t  # not accounting for scr refresh
                     blank.frameNStop = frameN  # exact frame index

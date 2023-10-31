@@ -10,6 +10,7 @@ import numpy as np
 import pandas as pd
 from glob import glob
 
+"""
 all_images = glob(os.path.join('greyscaled','*','*','*jpg'))
 unique_class = ['Living_Things','Nonliving_Things']
 unique_subclass = np.unique([item.replace('\\','/').split('/')[2] for item in all_images])
@@ -32,7 +33,8 @@ df_images = pd.DataFrame(df_images)
 for idx,df_sub in df_images.groupby('count'):
     df_sub = df_sub.sample(frac = 1,replace = False,random_state = 12345)
     df_sub.to_csv(f'dataframes/living-nonliving-{idx}.csv',index = False)
-    
+"""
+
 all_images = glob(os.path.join('processed','*','*png'))
 
 dict_name = dict(face = 'Living_Things',
@@ -49,4 +51,7 @@ for image in all_images:
 df_images = pd.DataFrame(df_images)
 for idx,df_sub in df_images.groupby('count'):
     df_sub = df_sub.sample(frac = 1,replace = False,random_state = 12345)
-    df_sub.to_csv(f'dataframes/face-house-{idx}.csv',index = False)
+    df_sub1 = df_sub.iloc[:100] # 前100个trial
+    df_sub2 = df_sub.iloc[100:] # 后100个trial
+    df_sub1.to_csv(f'dataframes/face-house-{idx}1.csv',index = False)
+    df_sub2.to_csv(f'dataframes/face-house-{idx}2.csv',index = False)
