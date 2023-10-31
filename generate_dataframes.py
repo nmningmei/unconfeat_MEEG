@@ -55,3 +55,11 @@ for idx,df_sub in df_images.groupby('count'):
     df_sub2 = df_sub.iloc[100:] # 后100个trial
     df_sub1.to_csv(f'dataframes/face-house-{idx}1.csv',index = False)
     df_sub2.to_csv(f'dataframes/face-house-{idx}2.csv',index = False)
+
+all_images = glob(os.path.join('materials','*','*'))
+df = pd.DataFrame(dict(image_name = all_images))
+df['category'] = df['image_name'].apply(lambda x:x.split('/')[1])
+df['category'] = df['category'].map(dict(face = 'Living_Things',
+                                         house = 'Nonliving_Things'))
+df = df.sample(frac = 1,replace = False,random_state = 12345)
+df.to_csv(f'dataframes/locolizer.csv',index = False)
