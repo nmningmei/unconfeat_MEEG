@@ -1,8 +1,8 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2023.2.3),
-    on 十一月 01, 2023, at 11:54
+    on 十一月 01, 2023, at 11:34
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -32,9 +32,6 @@ import sys  # to get file system encoding
 
 import psychopy.iohub as io
 from psychopy.hardware import keyboard
-import serial
-
-# Run 'Before Experiment' code from setup_vbles_trigger
 import serial
 
 port = serial.Serial('COM1', baudrate = 115200, bytesize = serial.EIGHTBITS)
@@ -327,7 +324,6 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     
     # --- Initialize components for Routine "setupTRIGetc" ---
     # Run 'Begin Experiment' code from setup_vbles_trigger
-    
     curr=int(expInfo['probeFrames'])
     count=0
     
@@ -677,9 +673,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         # Run 'Begin Routine' code from code
         trials.addData("image_onset_time", globalClock.getTime() - startTime)
         trigger_code = dict_answer[category]
-        
-        stimulus_pulse_started = False
-        stimulus_pulse_ended = False
+        print(trigger_code)
         probe.setImage(image_name)
         # keep track of which components have finished
         probe_routineComponents = [blank, probe]
@@ -704,16 +698,6 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
             tThisFlipGlobal = win.getFutureFlipTime(clock=None)
             frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
             # update/draw components on each frame
-            # Run 'Each Frame' code from code
-            if probe.status == STARTED and not stimulus_pulse_started:
-                # update params
-                win.callOnFlip(port.write, str.encode(chr(trigger_code)))
-                stimulus_pulse_start_time = globalClock.getTime()
-                stimulus_pulse_started = True
-            if stimulus_pulse_started and not stimulus_pulse_ended: 
-                if globalClock.getTime() - stimulus_pulse_start_time >= 0.005:
-                    win.callOnFlip(port.write, str.encode('0'))
-                    stimulus_pulse_ended = True
             
             # *blank* updates
             
@@ -749,7 +733,8 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
                     blank.setAutoDraw(False)
             
             # *probe* updates
-            
+            stimulus_pulse_started = False
+            stimulus_pulse_ended = False
             # if probe is starting this frame...
             if probe.status == NOT_STARTED and blank.status == FINISHED:
                 # keep track of start time/frame for later
@@ -764,9 +749,15 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
                 probe.setAutoDraw(True)
             
             # if probe is active this frame...
-            if probe.status == STARTED:
+            if probe.status == STARTED and not stimulus_pulse_started:
                 # update params
-                pass
+                win.callOnFlip(port.write, str.encode(chr(trigger_code)))
+                stimulus_pulse_start_time = globalClock.getTime()
+                stimulus_pulse_started = True
+            if stimulus_pulse_started and not stimulus_pulse_ended: 
+                if globalClock.getTime() - stimulus_pulse_start_time >= 0.005:
+                    win.callOnFlip(port.write, str.encode('0'))
+                    stimulus_pulse_ended = True
             
             # if probe is stopping this frame...
             if probe.status == STARTED:
@@ -1608,8 +1599,6 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     print(globalClock.getTime() - startTime)
     #print("mean unconscious = {:.2f}, frame = {}, p(correct) = {:.2f}".format(
     #    meanvis,curr,meanacc))
-    
-    port.close()
     
     # mark experiment as finished
     endExperiment(thisExp, win=win, inputs=inputs)
