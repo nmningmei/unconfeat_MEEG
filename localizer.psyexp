@@ -423,11 +423,11 @@
         <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
-        <Param val="" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
-        <Param val="trials.addData(&quot;image_onset_time&quot;, globalClock.getTime() - startTime)&amp;#10;" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="trials.addData(&quot;image_onset_time&quot;, (globalClock.getTime() - startTime));&amp;#10;trigger_code = dict_answer[category];&amp;#10;stimulus_pulse_started = false;&amp;#10;stimulus_pulse_ended = false;&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="trials.addData(&quot;image_onset_time&quot;, globalClock.getTime() - startTime)&amp;#10;&amp;#10;trigger_code = dict_answer[category]&amp;#10;&amp;#10;stimulus_pulse_started = False&amp;#10;stimulus_pulse_ended = False&amp;#10;" valType="extendedCode" updates="constant" name="Begin Routine"/>
         <Param val="Auto-&gt;JS" valType="str" updates="None" name="Code Type"/>
-        <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
-        <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
+        <Param val="if probe.status == STARTED and not stimulus_pulse_started:&amp;#10;    # update params&amp;#10;    dev.activate_line(trigger_code)&amp;#10;    #win.callOnFlip(port.write, str.encode(chr(trigger_code)))&amp;#10;    stimulus_pulse_start_time = globalClock.getTime()&amp;#10;    stimulus_pulse_started = True&amp;#10;if stimulus_pulse_started and not stimulus_pulse_ended: &amp;#10;    if globalClock.getTime() - stimulus_pulse_start_time &gt;= 0.005:&amp;#10;        #win.callOnFlip(port.write, str.encode('0'))&amp;#10;        #dev.activate_line(0)&amp;#10;        stimulus_pulse_ended = True" valType="extendedCode" updates="constant" name="Each Frame"/>
+        <Param val="if (((probe.status === PsychoJS.Status.STARTED) &amp;&amp; (! stimulus_pulse_started))) {&amp;#10;    dev.activate_line(trigger_code);&amp;#10;    stimulus_pulse_start_time = globalClock.getTime();&amp;#10;    stimulus_pulse_started = true;&amp;#10;}&amp;#10;if ((stimulus_pulse_started &amp;&amp; (! stimulus_pulse_ended))) {&amp;#10;    if (((globalClock.getTime() - stimulus_pulse_start_time) &gt;= 0.005)) {&amp;#10;        stimulus_pulse_ended = true;&amp;#10;    }&amp;#10;}&amp;#10;" valType="extendedCode" updates="constant" name="Each JS Frame"/>
         <Param val="" valType="extendedCode" updates="constant" name="End Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="End JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="End JS Routine"/>
@@ -487,27 +487,6 @@
         <Param val="128" valType="code" updates="constant" name="texture resolution"/>
         <Param val="pix" valType="str" updates="None" name="units"/>
       </ImageComponent>
-      <SerialOutComponent name="trigger_probe" plugin="None">
-        <Param val="9600" valType="int" updates="None" name="baudrate"/>
-        <Param val="8" valType="int" updates="None" name="bytesize"/>
-        <Param val="False" valType="bool" updates="None" name="disabled"/>
-        <Param val="" valType="code" updates="None" name="durationEstim"/>
-        <Param val="False" valType="bool" updates="None" name="getResponse"/>
-        <Param val="trigger_probe" valType="code" updates="None" name="name"/>
-        <Param val="N" valType="str" updates="None" name="parity"/>
-        <Param val="COM1" valType="str" updates="None" name="port"/>
-        <Param val="True" valType="bool" updates="None" name="saveStartStop"/>
-        <Param val="" valType="code" updates="None" name="startEstim"/>
-        <Param val="condition" valType="str" updates="None" name="startType"/>
-        <Param val="$preblank.status == FINISHED" valType="code" updates="None" name="startVal"/>
-        <Param val="$chr(8)" valType="str" updates="None" name="startdata"/>
-        <Param val="duration (s)" valType="str" updates="None" name="stopType"/>
-        <Param val="1.0" valType="code" updates="constant" name="stopVal"/>
-        <Param val="1" valType="int" updates="None" name="stopbits"/>
-        <Param val="0" valType="str" updates="None" name="stopdata"/>
-        <Param val="True" valType="bool" updates="None" name="syncScreenRefresh"/>
-        <Param val="" valType="int" updates="None" name="timeout"/>
-      </SerialOutComponent>
       <TextComponent name="postblank" plugin="None">
         <Param val="white" valType="color" updates="constant" name="color"/>
         <Param val="rgb" valType="str" updates="constant" name="colorSpace"/>
@@ -610,10 +589,10 @@
         <Param val="False" valType="bool" updates="None" name="useWindowParams"/>
       </RoutineSettingsComponent>
       <CodeComponent name="setup_vbles_trigger" plugin="None">
-        <Param val="" valType="extendedCode" updates="constant" name="Before Experiment"/>
-        <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
-        <Param val="#curr=int(expInfo['probeFrames'])&amp;#10;count=0&amp;#10;&amp;#10;#n_total = 32&amp;#10;#premask_dur = float(expInfo['premask_dur'])&amp;#10;#postmask_dur = float(expInfo['postmask_dur'])&amp;#10;#session = int(expInfo['session'])&amp;#10;#block = int(expInfo['block'])&amp;#10;#n_square = int(expInfo['n_square'])&amp;#10;image_size = int(expInfo['image_size'])&amp;#10;&amp;#10;import time&amp;#10;#from psychopy import parallel &amp;#10;#parallel.setPortAddress(888)&amp;#10;#wait_msg = &quot;Waiting for Scanner...&quot;&amp;#10;#msg = visual.TextStim(win, color = 'DarkGray', text = wait_msg)&amp;#10;&amp;#10;" valType="extendedCode" updates="constant" name="Begin Experiment"/>
-        <Param val="import * as time from 'time';&amp;#10;count = 0;&amp;#10;image_size = Number.parseInt(expInfo[&quot;image_size&quot;]);&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
+        <Param val="import pyxid2&amp;#10;import time&amp;#10;&amp;#10;# get a list of all attached XID devices&amp;#10;devices = pyxid2.get_xid_devices()&amp;#10;&amp;#10;dev = devices[0] # get the first device to use&amp;#10;print(dev)&amp;#10;dev.reset_base_timer()&amp;#10;dev.reset_rt_timer()&amp;#10;" valType="extendedCode" updates="constant" name="Before Experiment"/>
+        <Param val="import * as pyxid2 from 'pyxid2';&amp;#10;import * as time from 'time';&amp;#10;devices = pyxid2.get_xid_devices();&amp;#10;dev = devices[0];&amp;#10;console.log(dev);&amp;#10;dev.reset_base_timer();&amp;#10;dev.reset_rt_timer();&amp;#10;" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
+        <Param val="#curr=int(expInfo['probeFrames'])&amp;#10;count=0&amp;#10;&amp;#10;#n_total = 32&amp;#10;#premask_dur = float(expInfo['premask_dur'])&amp;#10;#postmask_dur = float(expInfo['postmask_dur'])&amp;#10;#session = int(expInfo['session'])&amp;#10;#block = int(expInfo['block'])&amp;#10;#n_square = int(expInfo['n_square'])&amp;#10;image_size = int(expInfo['image_size'])&amp;#10;&amp;#10;import time&amp;#10;#from psychopy import parallel &amp;#10;#parallel.setPortAddress(888)&amp;#10;#wait_msg = &quot;Waiting for Scanner...&quot;&amp;#10;#msg = visual.TextStim(win, color = 'DarkGray', text = wait_msg)&amp;#10;&amp;#10;dict_answer = {'Living_Things':1,&amp;#10;               'Nonliving_Things':2,}&amp;#10;&amp;#10;dict_response = {'1':3,'2':4}&amp;#10;&amp;#10;dict_visible = {'1':5,'2':6,'3':7}&amp;#10;&amp;#10;" valType="extendedCode" updates="constant" name="Begin Experiment"/>
+        <Param val="import * as time from 'time';&amp;#10;count = 0;&amp;#10;image_size = Number.parseInt(expInfo[&quot;image_size&quot;]);&amp;#10;dict_answer = {&quot;Living_Things&quot;: 1, &quot;Nonliving_Things&quot;: 2};&amp;#10;dict_response = {&quot;1&quot;: 3, &quot;2&quot;: 4};&amp;#10;dict_visible = {&quot;1&quot;: 5, &quot;2&quot;: 6, &quot;3&quot;: 7};&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
         <Param val="psychoJS.window.flip();&amp;#10;globalClock.reset();&amp;#10;startTime = globalClock.getTime();&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
         <Param val="#msg.draw()&amp;#10;win.flip()&amp;#10;&amp;#10;#while True:&amp;#10;#    if (parallel.readPin(10) == 1) or (event.getKeys() == ['q']):&amp;#10;#        break&amp;#10;#    else:&amp;#10;#        time.sleep(0.0001) # give 1ms to other processes&amp;#10;globalClock.reset()&amp;#10;startTime = globalClock.getTime() " valType="extendedCode" updates="constant" name="Begin Routine"/>
         <Param val="Auto-&gt;JS" valType="str" updates="None" name="Code Type"/>
