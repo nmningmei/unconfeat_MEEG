@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2023.2.3),
-    on 十一月 01, 2023, at 15:25
+    on 十一月 01, 2023, at 14:06
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -34,16 +34,10 @@ import psychopy.iohub as io
 from psychopy.hardware import keyboard
 
 # Run 'Before Experiment' code from setup_vbles_trigger
-import pyxid2
-import time
+import serial
 
-# get a list of all attached XID devices
-devices = pyxid2.get_xid_devices()
+port = serial.Serial('COM5', baudrate = 115200, bytesize = serial.EIGHTBITS)
 
-dev = devices[0] # get the first device to use
-print(dev)
-dev.reset_base_timer()
-dev.reset_rt_timer()
 # --- Setup global variables (available in all functions) ---
 # Ensure that relative paths start from the same directory as this script
 _thisDir = os.path.dirname(os.path.abspath(__file__))
@@ -123,7 +117,7 @@ def setupData(expInfo, dataDir=None):
     thisExp = data.ExperimentHandler(
         name=expName, version='',
         extraInfo=expInfo, runtimeInfo=None,
-        originPath='D:\\文档\\python_works\\unconfeat_MEEG\\post-mask-only-trigger.py',
+        originPath='C:\\Users\\dell\\Desktop\\实验\\post-mask-only-trigger.py',
         savePickle=True, saveWideText=True,
         dataFileName=dataDir + os.sep + filename, sortColumns='time'
     )
@@ -712,13 +706,12 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
             # Run 'Each Frame' code from code
             if probe.status == STARTED and not stimulus_pulse_started:
                 # update params
-                #win.callOnFlip(port.write, str.encode(chr(trigger_code)))
-                dev.activate_line(trigger_code)
+                win.callOnFlip(port.write, str.encode(chr(trigger_code)))
                 stimulus_pulse_start_time = globalClock.getTime()
                 stimulus_pulse_started = True
             if stimulus_pulse_started and not stimulus_pulse_ended: 
                 if globalClock.getTime() - stimulus_pulse_start_time >= 0.005:
-                    #win.callOnFlip(port.write, str.encode('0'))
+                    win.callOnFlip(port.write, str.encode('0'))
                     stimulus_pulse_ended = True
             
             # *blank* updates

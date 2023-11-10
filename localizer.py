@@ -1,8 +1,8 @@
-﻿#!/usr/bin/env python
+ #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2023.2.3),
-    on 十一月 01, 2023, at 15:33
+    on 十月 31, 2023, at 15:07
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -33,18 +33,6 @@ import sys  # to get file system encoding
 import psychopy.iohub as io
 from psychopy.hardware import keyboard
 import serial
-
-# Run 'Before Experiment' code from setup_vbles_trigger
-import pyxid2
-import time
-
-# get a list of all attached XID devices
-devices = pyxid2.get_xid_devices()
-
-dev = devices[0] # get the first device to use
-print(dev)
-dev.reset_base_timer()
-dev.reset_rt_timer()
 
 # --- Setup global variables (available in all functions) ---
 # Ensure that relative paths start from the same directory as this script
@@ -120,7 +108,7 @@ def setupData(expInfo, dataDir=None):
     thisExp = data.ExperimentHandler(
         name=expName, version='',
         extraInfo=expInfo, runtimeInfo=None,
-        originPath='D:\\文档\\python_works\\unconfeat_MEEG\\localizer.py',
+        originPath='C:\\Users\\Administrator\\Documents\\python_works\\unconfeat_MEEG\\localizer.py',
         savePickle=True, saveWideText=True,
         dataFileName=dataDir + os.sep + filename, sortColumns='time'
     )
@@ -346,13 +334,6 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     #wait_msg = "Waiting for Scanner..."
     #msg = visual.TextStim(win, color = 'DarkGray', text = wait_msg)
     
-    dict_answer = {'Living_Things':1,
-                   'Nonliving_Things':2,}
-    
-    dict_response = {'1':3,'2':4}
-    
-    dict_visible = {'1':5,'2':6,'3':7}
-    
     
     
     # --- Initialize components for Routine "introduction" ---
@@ -364,6 +345,15 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         languageStyle='LTR',
         depth=0.0);
     start_experiment = keyboard.Keyboard()
+    # Create serial object for device at port 'COM1'
+    serialCom1 = serial.Serial(
+        port='COM1',
+        baudrate=9600,
+        bytesize=8,
+        parity='N',
+        stopbits=1,
+        timeout=None,
+    )
     
     # --- Initialize components for Routine "probe_routine" ---
     preblank = visual.TextStim(win=win, name='preblank',
@@ -381,13 +371,19 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         color=[1,1,1], colorSpace='rgb', opacity=1,
         flipHoriz=False, flipVert=False,
         texRes=128, interpolate=True, depth=-2.0)
+    
+    # point trigger_probe to device at port 'COM1' and make sure it's open
+    trigger_probe = serialCom1
+    trigger_probe.status = NOT_STARTED
+    if not trigger_probe.is_open:
+        trigger_probe.open()
     postblank = visual.TextStim(win=win, name='postblank',
         text=None,
         font='Open Sans',
         pos=(0, 0), height=0.05, wrapWidth=None, ori=0.0, 
         color='white', colorSpace='rgb', opacity=None, 
         languageStyle='LTR',
-        depth=-3.0);
+        depth=-4.0);
     
     # --- Initialize components for Routine "response_routine" ---
     response = keyboard.Keyboard()
@@ -628,14 +624,9 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         # Run 'Begin Routine' code from code
         trials.addData("image_onset_time", globalClock.getTime() - startTime)
         
-        trigger_code = dict_answer[category]
-        
-        stimulus_pulse_started = False
-        stimulus_pulse_ended = False
-        
         probe.setImage(image_name)
         # keep track of which components have finished
-        probe_routineComponents = [preblank, probe, postblank]
+        probe_routineComponents = [preblank, probe, trigger_probe, postblank]
         for thisComponent in probe_routineComponents:
             thisComponent.tStart = None
             thisComponent.tStop = None
@@ -657,18 +648,6 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
             tThisFlipGlobal = win.getFutureFlipTime(clock=None)
             frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
             # update/draw components on each frame
-            # Run 'Each Frame' code from code
-            if probe.status == STARTED and not stimulus_pulse_started:
-                # update params
-                dev.activate_line(trigger_code)
-                #win.callOnFlip(port.write, str.encode(chr(trigger_code)))
-                stimulus_pulse_start_time = globalClock.getTime()
-                stimulus_pulse_started = True
-            if stimulus_pulse_started and not stimulus_pulse_ended: 
-                if globalClock.getTime() - stimulus_pulse_start_time >= 0.005:
-                    #win.callOnFlip(port.write, str.encode('0'))
-                    #dev.activate_line(0)
-                    stimulus_pulse_ended = True
             
             # *preblank* updates
             
@@ -735,6 +714,34 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
                     # update status
                     probe.status = FINISHED
                     probe.setAutoDraw(False)
+            
+            # if trigger_probe is starting this frame...
+            if trigger_probe.status == NOT_STARTED and preblank.status == FINISHED:
+                # keep track of start time/frame for later
+                trigger_probe.frameNStart = frameN  # exact frame index
+                trigger_probe.tStart = t  # local t and not account for scr refresh
+                trigger_probe.tStartRefresh = tThisFlipGlobal  # on global time
+                win.timeOnFlip(trigger_probe, 'tStartRefresh')  # time at next scr refresh
+                # add timestamp to datafile
+                thisExp.timestampOnFlip(win, 'trigger_probe.started')
+                # update status
+                trigger_probe.status = STARTED
+                win.callOnFlip(trigger_probe.write, bytes(chr(8), 'utf8'))
+                trigger_probe.status = STARTED
+            
+            # if trigger_probe is stopping this frame...
+            if trigger_probe.status == STARTED:
+                # is it time to stop? (based on global clock, using actual start)
+                if tThisFlipGlobal > trigger_probe.tStartRefresh + 1.0-frameTolerance:
+                    # keep track of stop time/frame for later
+                    trigger_probe.tStop = t  # not accounting for scr refresh
+                    trigger_probe.frameNStop = frameN  # exact frame index
+                    # add timestamp to datafile
+                    thisExp.timestampOnFlip(win, 'trigger_probe.stopped')
+                    # update status
+                    trigger_probe.status = FINISHED
+                    win.callOnFlip(trigger_probe.write, bytes('0', 'utf8'))
+                    trigger_probe.status = FINISHED
             
             # *postblank* updates
             
@@ -1069,6 +1076,9 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         routineTimer.reset()
     else:
         routineTimer.addTime(-3.000000)
+    # Close trigger_probe
+    if trigger_probe.is_open:
+        trigger_probe.close()
     # Run 'End Experiment' code from code_2
     print(globalClock.getTime() - startTime)
     #print("mean unconscious = {:.2f}, frame = {}, p(correct) = {:.2f}".format(

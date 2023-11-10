@@ -27,7 +27,7 @@ sleep_flash = .3
 for bm in range(0, 16):
     mask = 2 ** bm
     print("activate_line bitmask: ", mask)
-    dev.activate_line(lines=[1,3,5,7,9,11,13,15])
-    #dev.activate_line(bitmask=mask)
+    #dev.activate_line(lines=[1,3,5,7,9,11,13,15])
+    dev.activate_line(bitmask=2)
 
     time.sleep(sleep_flash)
