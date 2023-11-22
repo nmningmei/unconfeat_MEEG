@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2023.2.3),
-    on 十一月 09, 2023, at 16:46
+    on November 22, 2023, at 16:00
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -33,18 +33,6 @@ import sys  # to get file system encoding
 import psychopy.iohub as io
 from psychopy.hardware import keyboard
 
-# Run 'Before Experiment' code from setup_vbles_trigger
-import pyxid2
-import time
-
-# get a list of all attached XID devices
-devices = pyxid2.get_xid_devices()
-
-dev = devices[0] # get the first device to use
-print(dev)
-dev.reset_base_timer()
-dev.reset_rt_timer()
-dev.set_pulse_duration(30)
 # --- Setup global variables (available in all functions) ---
 # Ensure that relative paths start from the same directory as this script
 _thisDir = os.path.dirname(os.path.abspath(__file__))
@@ -52,13 +40,14 @@ _thisDir = os.path.dirname(os.path.abspath(__file__))
 psychopyVersion = '2023.2.3'
 expName = 'post-mask-only-trigger'  # from the Builder filename that created this script
 expInfo = {
-    'n_square': '64',
+    'n_square': '128',
     'probeFrames': '1',
     'participant': '1',
-    'image_size': '300',
+    'image_size': '256',
     'postmask_dur': '20',
     'session': '1',
     'block': '1',
+    'debug': False,
     'date': data.getDateStr(),  # add a simple timestamp
     'expName': expName,
     'psychopyVersion': psychopyVersion,
@@ -124,7 +113,7 @@ def setupData(expInfo, dataDir=None):
     thisExp = data.ExperimentHandler(
         name=expName, version='',
         extraInfo=expInfo, runtimeInfo=None,
-        originPath='C:\\Users\\dell\\Desktop\\实验\\post-mask-only-trigger_lastrun.py',
+        originPath='\\\\wsl.localhost\\Ubuntu\\home\\adowa\\Documents\\python_works\\unconfeat_MEEG\\post-mask-only-trigger_lastrun.py',
         savePickle=True, saveWideText=True,
         dataFileName=dataDir + os.sep + filename, sortColumns='time'
     )
@@ -344,6 +333,20 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     block = int(expInfo['block'])
     n_square = int(expInfo['n_square'])
     image_size = int(expInfo['image_size'])
+    debug = bool(expInfo['debug'])
+    
+    if not debug:
+        import pyxid2
+        import time
+    
+        # get a list of all attached XID devices
+        devices = pyxid2.get_xid_devices()
+    
+        dev = devices[0] # get the first device to use
+        print(dev)
+        dev.reset_base_timer()
+        dev.reset_rt_timer()
+        dev.set_pulse_duration(30)
     
     dict_answer = {'Living_Things':1,
                    'Nonliving_Things':2,}
@@ -362,19 +365,22 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     
     # --- Initialize components for Routine "introduction" ---
     description_of_experiment = visual.TextStim(win=win, name='description_of_experiment',
-        text='您的任务是识别接下来的图片里是人脸还是房子。\n\n请根据V（人脸）和nV（房子）的相对位置来按键。\n\n对应左边的按“1”，对应右边的按“2”。\n\n实验即将开始。',
+        text='您的任务是识别接下来的图片里是人脸还是房子。\n\n请根据V（人脸）和nV（房子）的相对位置来按键。\n\n对应左边的按“1”，对应右边的按“2”。\n\n请实验员按“空格”开始实验，同时移开鼠标。',
         font='Arial',
         pos=(0, 0), height=0.1, wrapWidth=None, ori=0, 
         color='white', colorSpace='rgb', opacity=1, 
         languageStyle='LTR',
         depth=0.0);
-    global_fixation = visual.TextStim(win=win, name='global_fixation',
+    start_experiment = keyboard.Keyboard()
+    
+    # --- Initialize components for Routine "global_fixation" ---
+    first_fixation = visual.TextStim(win=win, name='first_fixation',
         text='+',
-        font='Arial',
-        pos=[0, 0], height=0.1, wrapWidth=None, ori=0, 
-        color='white', colorSpace='rgb', opacity=1, 
+        font='Open Sans',
+        pos=(0, 0), height=0.05, wrapWidth=None, ori=0.0, 
+        color='white', colorSpace='rgb', opacity=None, 
         languageStyle='LTR',
-        depth=-1.0);
+        depth=0.0);
     
     # --- Initialize components for Routine "probe_routine" ---
     blank = visual.TextStim(win=win, name='blank',
@@ -389,7 +395,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         name='probe', units='pix', 
         image='default.png', mask=None, anchor='center',
         ori=0, pos=(0, 0), size=(image_size, image_size),
-        color=[1,1,1], colorSpace='rgb', opacity=1,
+        color=[1,1,1], colorSpace='rgb', opacity=0.5,
         flipHoriz=False, flipVert=False,
         texRes=128, interpolate=True, depth=-2.0)
     
@@ -534,8 +540,11 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     # --- Prepare to start Routine "introduction" ---
     continueRoutine = True
     # update component parameters for each repeat
+    start_experiment.keys = []
+    start_experiment.rt = []
+    _start_experiment_allKeys = []
     # keep track of which components have finished
-    introductionComponents = [description_of_experiment, global_fixation]
+    introductionComponents = [description_of_experiment, start_experiment]
     for thisComponent in introductionComponents:
         thisComponent.tStart = None
         thisComponent.tStop = None
@@ -550,7 +559,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     
     # --- Run Routine "introduction" ---
     routineForceEnded = not continueRoutine
-    while continueRoutine and routineTimer.getTime() < 6.0:
+    while continueRoutine:
         # get current time
         t = routineTimer.getTime()
         tThisFlip = win.getFutureFlipTime(clock=routineTimer)
@@ -576,45 +585,33 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
             # update params
             pass
         
-        # if description_of_experiment is stopping this frame...
-        if description_of_experiment.status == STARTED:
-            # is it time to stop? (based on global clock, using actual start)
-            if tThisFlipGlobal > description_of_experiment.tStartRefresh + 3-frameTolerance:
-                # keep track of stop time/frame for later
-                description_of_experiment.tStop = t  # not accounting for scr refresh
-                description_of_experiment.frameNStop = frameN  # exact frame index
-                # update status
-                description_of_experiment.status = FINISHED
-                description_of_experiment.setAutoDraw(False)
+        # *start_experiment* updates
+        waitOnFlip = False
         
-        # *global_fixation* updates
-        
-        # if global_fixation is starting this frame...
-        if global_fixation.status == NOT_STARTED and tThisFlip >= 3-frameTolerance:
+        # if start_experiment is starting this frame...
+        if start_experiment.status == NOT_STARTED and tThisFlip >= 3.0-frameTolerance:
             # keep track of start time/frame for later
-            global_fixation.frameNStart = frameN  # exact frame index
-            global_fixation.tStart = t  # local t and not account for scr refresh
-            global_fixation.tStartRefresh = tThisFlipGlobal  # on global time
-            win.timeOnFlip(global_fixation, 'tStartRefresh')  # time at next scr refresh
+            start_experiment.frameNStart = frameN  # exact frame index
+            start_experiment.tStart = t  # local t and not account for scr refresh
+            start_experiment.tStartRefresh = tThisFlipGlobal  # on global time
+            win.timeOnFlip(start_experiment, 'tStartRefresh')  # time at next scr refresh
+            # add timestamp to datafile
+            thisExp.timestampOnFlip(win, 'start_experiment.started')
             # update status
-            global_fixation.status = STARTED
-            global_fixation.setAutoDraw(True)
-        
-        # if global_fixation is active this frame...
-        if global_fixation.status == STARTED:
-            # update params
-            pass
-        
-        # if global_fixation is stopping this frame...
-        if global_fixation.status == STARTED:
-            # is it time to stop? (based on global clock, using actual start)
-            if tThisFlipGlobal > global_fixation.tStartRefresh + 3-frameTolerance:
-                # keep track of stop time/frame for later
-                global_fixation.tStop = t  # not accounting for scr refresh
-                global_fixation.frameNStop = frameN  # exact frame index
-                # update status
-                global_fixation.status = FINISHED
-                global_fixation.setAutoDraw(False)
+            start_experiment.status = STARTED
+            # keyboard checking is just starting
+            waitOnFlip = True
+            win.callOnFlip(start_experiment.clock.reset)  # t=0 on next screen flip
+            win.callOnFlip(start_experiment.clearEvents, eventType='keyboard')  # clear events on next screen flip
+        if start_experiment.status == STARTED and not waitOnFlip:
+            theseKeys = start_experiment.getKeys(keyList=['space'], ignoreKeys=["escape"], waitRelease=False)
+            _start_experiment_allKeys.extend(theseKeys)
+            if len(_start_experiment_allKeys):
+                start_experiment.keys = _start_experiment_allKeys[-1].name  # just the last key pressed
+                start_experiment.rt = _start_experiment_allKeys[-1].rt
+                start_experiment.duration = _start_experiment_allKeys[-1].duration
+                # a response ends the routine
+                continueRoutine = False
         
         # check for quit (typically the Esc key)
         if defaultKeyboard.getKeys(keyList=["escape"]):
@@ -641,11 +638,105 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     for thisComponent in introductionComponents:
         if hasattr(thisComponent, "setAutoDraw"):
             thisComponent.setAutoDraw(False)
+    # check responses
+    if start_experiment.keys in ['', [], None]:  # No response was made
+        start_experiment.keys = None
+    thisExp.addData('start_experiment.keys',start_experiment.keys)
+    if start_experiment.keys != None:  # we had a response
+        thisExp.addData('start_experiment.rt', start_experiment.rt)
+        thisExp.addData('start_experiment.duration', start_experiment.duration)
+    thisExp.nextEntry()
+    # the Routine "introduction" was not non-slip safe, so reset the non-slip timer
+    routineTimer.reset()
+    
+    # --- Prepare to start Routine "global_fixation" ---
+    continueRoutine = True
+    # update component parameters for each repeat
+    thisExp.addData('global_fixation.started', globalClock.getTime())
+    # keep track of which components have finished
+    global_fixationComponents = [first_fixation]
+    for thisComponent in global_fixationComponents:
+        thisComponent.tStart = None
+        thisComponent.tStop = None
+        thisComponent.tStartRefresh = None
+        thisComponent.tStopRefresh = None
+        if hasattr(thisComponent, 'status'):
+            thisComponent.status = NOT_STARTED
+    # reset timers
+    t = 0
+    _timeToFirstFrame = win.getFutureFlipTime(clock="now")
+    frameN = -1
+    
+    # --- Run Routine "global_fixation" ---
+    routineForceEnded = not continueRoutine
+    while continueRoutine and routineTimer.getTime() < 3.0:
+        # get current time
+        t = routineTimer.getTime()
+        tThisFlip = win.getFutureFlipTime(clock=routineTimer)
+        tThisFlipGlobal = win.getFutureFlipTime(clock=None)
+        frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
+        # update/draw components on each frame
+        
+        # *first_fixation* updates
+        
+        # if first_fixation is starting this frame...
+        if first_fixation.status == NOT_STARTED and tThisFlip >= 0.0-frameTolerance:
+            # keep track of start time/frame for later
+            first_fixation.frameNStart = frameN  # exact frame index
+            first_fixation.tStart = t  # local t and not account for scr refresh
+            first_fixation.tStartRefresh = tThisFlipGlobal  # on global time
+            win.timeOnFlip(first_fixation, 'tStartRefresh')  # time at next scr refresh
+            # update status
+            first_fixation.status = STARTED
+            first_fixation.setAutoDraw(True)
+        
+        # if first_fixation is active this frame...
+        if first_fixation.status == STARTED:
+            # update params
+            pass
+        
+        # if first_fixation is stopping this frame...
+        if first_fixation.status == STARTED:
+            # is it time to stop? (based on global clock, using actual start)
+            if tThisFlipGlobal > first_fixation.tStartRefresh + 3.0-frameTolerance:
+                # keep track of stop time/frame for later
+                first_fixation.tStop = t  # not accounting for scr refresh
+                first_fixation.frameNStop = frameN  # exact frame index
+                # update status
+                first_fixation.status = FINISHED
+                first_fixation.setAutoDraw(False)
+        
+        # check for quit (typically the Esc key)
+        if defaultKeyboard.getKeys(keyList=["escape"]):
+            thisExp.status = FINISHED
+        if thisExp.status == FINISHED or endExpNow:
+            endExperiment(thisExp, inputs=inputs, win=win)
+            return
+        
+        # check if all components have finished
+        if not continueRoutine:  # a component has requested a forced-end of Routine
+            routineForceEnded = True
+            break
+        continueRoutine = False  # will revert to True if at least one component still running
+        for thisComponent in global_fixationComponents:
+            if hasattr(thisComponent, "status") and thisComponent.status != FINISHED:
+                continueRoutine = True
+                break  # at least one component has not yet finished
+        
+        # refresh the screen
+        if continueRoutine:  # don't flip if this routine is over or we'll get a blank screen
+            win.flip()
+    
+    # --- Ending Routine "global_fixation" ---
+    for thisComponent in global_fixationComponents:
+        if hasattr(thisComponent, "setAutoDraw"):
+            thisComponent.setAutoDraw(False)
+    thisExp.addData('global_fixation.stopped', globalClock.getTime())
     # using non-slip timing so subtract the expected duration of this Routine (unless ended on request)
     if routineForceEnded:
         routineTimer.reset()
     else:
-        routineTimer.addTime(-6.000000)
+        routineTimer.addTime(-3.000000)
     
     # set up handler to look after randomisation of conditions etc
     trials = data.TrialHandler(nReps=1, method='random', 
@@ -711,15 +802,16 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
             frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
             # update/draw components on each frame
             # Run 'Each Frame' code from code
-            if probe.status == STARTED and not stimulus_pulse_started:
-                # update params
-                win.callOnFlip(dev.activate_line, trigger_code)
-                stimulus_pulse_start_time = globalClock.getTime()
-                stimulus_pulse_started = True
-            if stimulus_pulse_started and not stimulus_pulse_ended: 
-                if globalClock.getTime() - stimulus_pulse_start_time >= 0.005:
-                    #win.callOnFlip(port.write, str.encode('0'))
-                    stimulus_pulse_ended = True
+            if not debug:
+                if probe.status == STARTED and not stimulus_pulse_started:
+                    # update params
+                    win.callOnFlip(dev.activate_line, trigger_code)
+                    stimulus_pulse_start_time = globalClock.getTime()
+                    stimulus_pulse_started = True
+                if stimulus_pulse_started and not stimulus_pulse_ended: 
+                    if globalClock.getTime() - stimulus_pulse_start_time >= 0.005:
+                        #win.callOnFlip(port.write, str.encode('0'))
+                        stimulus_pulse_ended = True
             
             # *blank* updates
             

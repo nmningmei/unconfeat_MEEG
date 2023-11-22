@@ -52,18 +52,18 @@ def proc(image,idx,reference_im):
     im = Image.fromarray(imarray)
     im = im.filter(ImageFilter.GaussianBlur(4))
     scramble_im = scramble_im.filter(ImageFilter.GaussianBlur(4))
-    blended = Image.blend(im,scramble_im,alpha = .55)
+    blended = Image.blend(im,scramble_im,alpha = .25)
     
     temp = image.replace('\\','/').split('/')
     
-    blended.save(os.path.join(new_folder,temp[1],temp[2].split('.')[0] + f'_{idx}.png'))
+    blended.save(os.path.join(new_folder,temp[-2],temp[-1].split('.')[0] + f'_{idx}.png'))
     return im,blended
 
 if __name__ == "__main__":
     np.random.seed(12345)
-    images = glob('materials/*/*')
+    images = glob('../materials/*/*')
     
-    new_folder = 'processed'
+    new_folder = '../processed'
     if os.path.exists(new_folder):
         rmtree(new_folder)
     os.mkdir(new_folder)
