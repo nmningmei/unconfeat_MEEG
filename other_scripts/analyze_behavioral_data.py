@@ -35,7 +35,7 @@ if __name__ == "__main__":
             temp_data[row['category']] = row['image_name']
         df.append(temp_data)
     df = pd.concat(df)
-    for col in ['probe_Frames_raw',
+    for col in ['mask_frames_raw',
                 'visible.keys_raw',
                 'response.keys_raw']:
         df[col] = df[col].apply(str2int)
@@ -47,6 +47,8 @@ if __name__ == "__main__":
     df_res = dict(visible = [],
                   behavioral = [],
                   pval = [],
+                  N = [],
+                  frames = [],
                   )
     for visible,df_sub in df.groupby('visible.keys_raw'):
         df_sub = df_sub.dropna(subset = ['response.keys_raw'])
@@ -83,6 +85,8 @@ if __name__ == "__main__":
             df_res['visible'].append(visible)
             df_res['behavioral'].append(experiment.mean())
             df_res['pval'].append(pval)
+            df_res['N'].append(df_sub.shape[0])
+            df_res['frames'].append(df_sub['mask_frames_raw'].values.mean())
     df_plot = pd.DataFrame(df_plot)
     df_res = pd.DataFrame(df_res)
             

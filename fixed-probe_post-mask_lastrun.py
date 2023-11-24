@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2023.2.3),
-    on November 24, 2023, at 14:37
+    on November 24, 2023, at 15:43
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -38,7 +38,7 @@ from psychopy.hardware import keyboard
 _thisDir = os.path.dirname(os.path.abspath(__file__))
 # Store info about the experiment session
 psychopyVersion = '2023.2.3'
-expName = 'post-mask-only-trigger'  # from the Builder filename that created this script
+expName = 'fixed-probe_post-mask'  # from the Builder filename that created this script
 expInfo = {
     'n_square': '128',
     'probeFrames': '1',
@@ -113,7 +113,7 @@ def setupData(expInfo, dataDir=None):
     thisExp = data.ExperimentHandler(
         name=expName, version='',
         extraInfo=expInfo, runtimeInfo=None,
-        originPath='\\\\wsl.localhost\\Ubuntu\\home\\adowa\\Documents\\python_works\\unconfeat_MEEG\\post-mask-only-trigger.py',
+        originPath='\\\\wsl.localhost\\Ubuntu\\home\\adowa\\Documents\\python_works\\unconfeat_MEEG\\fixed-probe_post-mask_lastrun.py',
         savePickle=True, saveWideText=True,
         dataFileName=dataDir + os.sep + filename, sortColumns='time'
     )
@@ -868,7 +868,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
             
             # if probe is stopping this frame...
             if probe.status == STARTED:
-                if frameN >= (probe.frameNStart + curr):
+                if frameN >= (probe.frameNStart + 1):
                     # keep track of stop time/frame for later
                     probe.tStop = t  # not accounting for scr refresh
                     probe.frameNStop = frameN  # exact frame index
@@ -1415,18 +1415,18 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
             trials.addData('visible.duration', visible.duration)
         # Run 'End Routine' code from staircase
         count += 1
-        trials.addData('probe_Frames',curr)
+        trials.addData('mask_frames',postmask_dur)
             
         count += 1
         if (visible.keys == str('1')) or (visible.keys == '1'):# invisible
-                curr += np.random.choice([0,1,2,],size=1,p=[0.4,0.3,0.3])[0]
-                if curr < 1:  curr = 1
+                postmask_dur -= np.random.choice([0,1,2,3],size=1,)[0]
+                if postmask_dur < 0:  postmask_dur = 0
         elif (visible.keys == str('2')) or (visible.keys == '2'):# partially aware
-                curr -= 1
-                if curr < 1:  curr = 1 
+                postmask_dur += np.random.choice([1,2,3],size=1,)[0]
+                if postmask_dur < 0:  postmask_dur = 0 
         elif (visible.keys == str('3')) or (visible.keys == '3'): # visible
-                curr -= np.random.choice([2,3],size=1,p=[0.5,0.5])[0]
-                if curr < 1: curr = 1
+                postmask_dur += np.random.choice([1,2,3],size=1,)[0]
+                if postmask_dur < 0: postmask_dur = 0
         
         # using non-slip timing so subtract the expected duration of this Routine (unless ended on request)
         if routineForceEnded:
@@ -1596,7 +1596,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         # Run 'End Routine' code from print_
         print("{}/{},mean unconscious = {:.2f}, frame = {}, p(correct) = {:.2f}".format(
             trials.thisN,trials.nTotal,
-            meanvis,curr,meanacc))
+            meanvis,postmask_dur,meanacc))
         # the Routine "show_message" was not non-slip safe, so reset the non-slip timer
         routineTimer.reset()
         thisExp.nextEntry()
