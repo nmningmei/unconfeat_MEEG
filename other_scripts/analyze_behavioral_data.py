@@ -109,6 +109,7 @@ if __name__ == "__main__":
                        "inner":'quartile',
                        }
                     )
+    [ax.axhline(0.5,linestyle = '--',color = 'black',alpha = .7) for ax in g.axes.flatten()]
     g.set(xlabel = 'awareness',
           ylabel = 'ROC AUC')
     g.savefig('results.jpg',
