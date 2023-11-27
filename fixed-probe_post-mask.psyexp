@@ -235,8 +235,8 @@
         <Param val="" valType="extendedCode" updates="constant" name="Before JS Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin Experiment"/>
         <Param val="" valType="extendedCode" updates="constant" name="Begin JS Experiment"/>
-        <Param val="jitter_delay_dur = np.random.choice([0.5, 1, 1.5, 2], {&quot;size&quot;: 1})[0];&amp;#10;trials.addData(&quot;jitter1&quot;, jitter_delay_dur);&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
-        <Param val="&amp;#10;&amp;#10;jitter_delay_dur=np.random.choice([0.5,1,1.5,2,],size = 1,)[0]#first is jit1_count 0&amp;#10;&amp;#10;trials.addData(&quot;jitter1&quot;, jitter_delay_dur)" valType="extendedCode" updates="constant" name="Begin Routine"/>
+        <Param val="jitter_delay_dur = np.random.uniform(0.5, 1.5, {&quot;size&quot;: 1})[0];&amp;#10;trials.addData(&quot;jitter1&quot;, jitter_delay_dur);&amp;#10;" valType="extendedCode" updates="constant" name="Begin JS Routine"/>
+        <Param val="&amp;#10;&amp;#10;jitter_delay_dur=np.random.uniform(0.5,1.5,size = 1,)[0]#first is jit1_count 0&amp;#10;&amp;#10;trials.addData(&quot;jitter1&quot;, jitter_delay_dur)" valType="extendedCode" updates="constant" name="Begin Routine"/>
         <Param val="Auto-&gt;JS" valType="str" updates="None" name="Code Type"/>
         <Param val="" valType="extendedCode" updates="constant" name="Each Frame"/>
         <Param val="" valType="extendedCode" updates="constant" name="Each JS Frame"/>
