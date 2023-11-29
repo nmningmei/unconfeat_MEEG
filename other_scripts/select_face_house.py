@@ -43,3 +43,5 @@ if __name__ == "__main__":
         temp = item.replace('\\','/').split('/')
         new_name = os.path.join(folder_name,'house',f'{temp[-1]}')
         copyfile(item,new_name)
+    
+    

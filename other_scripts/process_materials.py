@@ -5,7 +5,7 @@ Created on Tue Oct 24 09:59:29 2023
 @author: Administrator
 """
 
-import os
+import os,re
 import numpy as np
 from glob import glob
 from tqdm import tqdm
@@ -42,11 +42,16 @@ def scramble(image):
     return ImScrambled.astype('uint8') # make sure to be in RGB format
 
 def proc(image,idx,reference_im):
+    # resize the background noise image
     scramble_im = Image.fromarray(scramble(reference_im.resize((512,512))))
+    # resize the target image we are about to modify
     im = Image.open(image).convert("L").convert("RGB").resize((512,512))
-    if np.random.randn() > 0:
+    # random modification to the image
+    if np.random.randn() > 0: # horizontal flip
         im = im.transpose(method = Image.Transpose.FLIP_LEFT_RIGHT)
+    # random rotation
     im = im.rotate(np.random.randint(-45,45,size = 1),fillcolor = (0,0,0),)
+    # remove very bright pixels
     imarray = np.asarray(im).copy()
     imarray[np.where(imarray > 245)]  = 0
     im = Image.fromarray(imarray)
@@ -55,8 +60,8 @@ def proc(image,idx,reference_im):
     blended = Image.blend(im,scramble_im,alpha = .25)
     
     temp = image.replace('\\','/').split('/')
-    
-    blended.save(os.path.join(new_folder,temp[-2],temp[-1].split('.')[0] + f'_{idx}.png'))
+    image_index = int(re.findall(r'\d+',temp[-1])[0])
+    blended.save(os.path.join(new_folder,temp[2],f'{temp[2]}-{image_index}_{idx}.png'))
     return im,blended
 
 if __name__ == "__main__":
@@ -75,7 +80,9 @@ if __name__ == "__main__":
                               ).convert("L").convert("RGB")
     
     
-    for image in images:
-        _ = Parallel(n_jobs = -1,verbose = 1)(delayed(proc)(**{'image':image,'idx':idx,
-                                                               'reference_im':reference_im}
-                                                            ) for idx in range(26))
+    for idx in range(26):
+        _ = Parallel(n_jobs = -1,verbose = 1)(delayed(proc)(**{'image':image,
+                                                               'idx':idx,
+                                                               'reference_im':reference_im,
+                                                               }) for image in images)
+    
