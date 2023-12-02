@@ -1,8 +1,8 @@
- #!/usr/bin/env python
+﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2023.2.3),
-    on 十月 31, 2023, at 15:07
+    on November 30, 2023, at 17:44
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -43,6 +43,7 @@ expName = 'localizer'  # from the Builder filename that created this script
 expInfo = {
     'participant': '1',
     'image_size': '300',
+    'debug': False,
     'date': data.getDateStr(),  # add a simple timestamp
     'expName': expName,
     'psychopyVersion': psychopyVersion,
@@ -108,7 +109,7 @@ def setupData(expInfo, dataDir=None):
     thisExp = data.ExperimentHandler(
         name=expName, version='',
         extraInfo=expInfo, runtimeInfo=None,
-        originPath='C:\\Users\\Administrator\\Documents\\python_works\\unconfeat_MEEG\\localizer.py',
+        originPath='\\\\wsl.localhost\\Ubuntu\\home\\adowa\\Documents\\python_works\\unconfeat_MEEG\\localizer.py',
         savePickle=True, saveWideText=True,
         dataFileName=dataDir + os.sep + filename, sortColumns='time'
     )
@@ -317,28 +318,30 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     
     # --- Initialize components for Routine "setupTRIGetc" ---
     # Run 'Begin Experiment' code from setup_vbles_trigger
-    #curr=int(expInfo['probeFrames'])
-    count=0
-    
-    #n_total = 32
-    #premask_dur = float(expInfo['premask_dur'])
-    #postmask_dur = float(expInfo['postmask_dur'])
-    #session = int(expInfo['session'])
-    #block = int(expInfo['block'])
-    #n_square = int(expInfo['n_square'])
     image_size = int(expInfo['image_size'])
-    
+    debug = bool(expInfo['debug'])
     import time
-    #from psychopy import parallel 
-    #parallel.setPortAddress(888)
-    #wait_msg = "Waiting for Scanner..."
-    #msg = visual.TextStim(win, color = 'DarkGray', text = wait_msg)
+    dict_answer = {'Living_Things':1,
+                   'Nonliving_Things':2,}
+                   
+                   
+    if not debug:
+        import pyxid2
+        import time
     
+        # get a list of all attached XID devices
+        devices = pyxid2.get_xid_devices()
+    
+        dev = devices[0] # get the first device to use
+        print(dev)
+        dev.reset_base_timer()
+        dev.reset_rt_timer()
+        dev.set_pulse_duration(10)
     
     
     # --- Initialize components for Routine "introduction" ---
     description_of_experiment = visual.TextStim(win=win, name='description_of_experiment',
-        text='这个实验是一个定位任务。\n\n您的任务是识别接下来的图片里是人脸还是房子。\n\n请根据V（人脸）和nV（房子）的相对位置来按键。\n\n对应左边的按“1”，对应右边的按“2”。\n\n请按“空格”键继续。',
+        text='这个实验是一个定位任务。\n\n您的任务是识别接下来的图片里是人脸还是房子。\n\n请根据V（人脸）和nV（房子）的相对位置来按键。\n\n对应左边的按“1”，对应右边的按“2”。\n\n请实验员按“空格”键继续。',
         font='Arial',
         pos=(0, 0), height=0.1, wrapWidth=None, ori=0, 
         color='white', colorSpace='rgb', opacity=1, 
@@ -419,14 +422,8 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     continueRoutine = True
     # update component parameters for each repeat
     # Run 'Begin Routine' code from setup_vbles_trigger
-    #msg.draw()
     win.flip()
     
-    #while True:
-    #    if (parallel.readPin(10) == 1) or (event.getKeys() == ['q']):
-    #        break
-    #    else:
-    #        time.sleep(0.0001) # give 1ms to other processes
     globalClock.reset()
     startTime = globalClock.getTime() 
     # keep track of which components have finished
@@ -591,7 +588,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     # set up handler to look after randomisation of conditions etc
     trials = data.TrialHandler(nReps=1, method='random', 
         extraInfo=expInfo, originPath=-1,
-        trialList=data.importConditions('dataframes/locolizer.csv'),
+        trialList=data.importConditions('dataframes/localizer.csv'),
         seed=12345, name='trials')
     thisExp.addLoop(trials)  # add the loop to the experiment
     thisTrial = trials.trialList[0]  # so we can initialise stimuli with some values
@@ -623,7 +620,9 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         thisExp.addData('probe_routine.started', globalClock.getTime())
         # Run 'Begin Routine' code from code
         trials.addData("image_onset_time", globalClock.getTime() - startTime)
-        
+        stimulus_pulse_started = False
+        stimulus_pulse_ended = False
+        trigger_code = dict_answer[category]
         probe.setImage(image_name)
         # keep track of which components have finished
         probe_routineComponents = [preblank, probe, trigger_probe, postblank]
@@ -648,6 +647,17 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
             tThisFlipGlobal = win.getFutureFlipTime(clock=None)
             frameN = frameN + 1  # number of completed frames (so 0 is the first frame)
             # update/draw components on each frame
+            # Run 'Each Frame' code from code
+            if not debug:
+                if probe.status == STARTED and not stimulus_pulse_started:
+                    # update params
+                    win.callOnFlip(dev.activate_line, trigger_code)
+                    stimulus_pulse_start_time = globalClock.getTime()
+                    stimulus_pulse_started = True
+                if stimulus_pulse_started and not stimulus_pulse_ended: 
+                    if globalClock.getTime() - stimulus_pulse_start_time >= 0.005:
+                        #win.callOnFlip(port.write, str.encode('0'))
+                        stimulus_pulse_ended = True
             
             # *preblank* updates
             
@@ -704,8 +714,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
             
             # if probe is stopping this frame...
             if probe.status == STARTED:
-                # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > probe.tStartRefresh + 1-frameTolerance:
+                if frameN >= (probe.frameNStart + 1):
                     # keep track of stop time/frame for later
                     probe.tStop = t  # not accounting for scr refresh
                     probe.frameNStop = frameN  # exact frame index
@@ -841,7 +850,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         
         # --- Run Routine "response_routine" ---
         routineForceEnded = not continueRoutine
-        while continueRoutine and routineTimer.getTime() < 1.5:
+        while continueRoutine:
             # get current time
             t = routineTimer.getTime()
             tThisFlip = win.getFutureFlipTime(clock=routineTimer)
@@ -867,19 +876,6 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
                 waitOnFlip = True
                 win.callOnFlip(response.clock.reset)  # t=0 on next screen flip
                 win.callOnFlip(response.clearEvents, eventType='keyboard')  # clear events on next screen flip
-            
-            # if response is stopping this frame...
-            if response.status == STARTED:
-                # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > response.tStartRefresh + 1.5-frameTolerance:
-                    # keep track of stop time/frame for later
-                    response.tStop = t  # not accounting for scr refresh
-                    response.frameNStop = frameN  # exact frame index
-                    # add timestamp to datafile
-                    thisExp.timestampOnFlip(win, 'response.stopped')
-                    # update status
-                    response.status = FINISHED
-                    response.status = FINISHED
             if response.status == STARTED and not waitOnFlip:
                 theseKeys = response.getKeys(keyList=['1','2'], ignoreKeys=["escape"], waitRelease=False)
                 _response_allKeys.extend(theseKeys)
@@ -887,6 +883,8 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
                     response.keys = _response_allKeys[-1].name  # just the last key pressed
                     response.rt = _response_allKeys[-1].rt
                     response.duration = _response_allKeys[-1].duration
+                    # a response ends the routine
+                    continueRoutine = False
             
             # *tell_response* updates
             
@@ -907,19 +905,6 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
             if tell_response.status == STARTED:
                 # update params
                 pass
-            
-            # if tell_response is stopping this frame...
-            if tell_response.status == STARTED:
-                # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > tell_response.tStartRefresh + 1.5-frameTolerance:
-                    # keep track of stop time/frame for later
-                    tell_response.tStop = t  # not accounting for scr refresh
-                    tell_response.frameNStop = frameN  # exact frame index
-                    # add timestamp to datafile
-                    thisExp.timestampOnFlip(win, 'tell_response.stopped')
-                    # update status
-                    tell_response.status = FINISHED
-                    tell_response.setAutoDraw(False)
             
             # check for quit (typically the Esc key)
             if defaultKeyboard.getKeys(keyList=["escape"]):
@@ -968,11 +953,8 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         if response.keys != None:  # we had a response
             trials.addData('response.rt', response.rt)
             trials.addData('response.duration', response.duration)
-        # using non-slip timing so subtract the expected duration of this Routine (unless ended on request)
-        if routineForceEnded:
-            routineTimer.reset()
-        else:
-            routineTimer.addTime(-1.500000)
+        # the Routine "response_routine" was not non-slip safe, so reset the non-slip timer
+        routineTimer.reset()
         thisExp.nextEntry()
         
         if thisSession is not None:

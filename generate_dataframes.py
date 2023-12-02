@@ -43,4 +43,4 @@ if __name__ == "__main__":
     df['category'] = df['category'].map(dict(face = 'Living_Things',
                                             house = 'Nonliving_Things'))
     df = df.sample(frac = 1,replace = False,random_state = 12345)
-    df.to_csv(f'dataframes/locolizer.csv',index = False)
+    df.to_csv(f'dataframes/localizer.csv',index = False)
