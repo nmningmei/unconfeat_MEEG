@@ -32,8 +32,16 @@ if __name__ == "__main__":
     
     for idx,df_sub in df_images.groupby('image_iter'):
         df_sub = df_sub.sample(frac = 1,replace = False,random_state = 12345)
-        df_sub1 = df_sub.iloc[:100] # 前100个trial
-        df_sub2 = df_sub.iloc[100:] # 后100个trial
+        df_f = df_sub[df_sub['category'] == "Living_Things"]
+        df_h = df_sub[df_sub['category'] == 'Nonliving_Things']
+        
+        df_f1 = df_f.iloc[:50]
+        df_f2 = df_f.iloc[50:]
+        df_h1 = df_h.iloc[:50]
+        df_h2 = df_h.iloc[50:]
+        
+        df_sub1 = pd.concat([df_f1,df_h1]).sample(frac = 1,replace = False,random_state=12345).reset_index(drop=True) # 前100个trial
+        df_sub2 = pd.concat([df_f2,df_h2]).sample(frac = 1,replace = False,random_state=12345).reset_index(drop=True) # 后100个trial
         df_sub1.to_csv(f'dataframes/face-house-{idx}1.csv',index = False)
         df_sub2.to_csv(f'dataframes/face-house-{idx}2.csv',index = False)
 
