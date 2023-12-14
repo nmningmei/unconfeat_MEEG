@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2023.2.3),
-    on December 02, 2023, at 12:53
+    on December 13, 2023, at 19:09
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -41,7 +41,8 @@ psychopyVersion = '2023.2.3'
 expName = 'localizer'  # from the Builder filename that created this script
 expInfo = {
     'participant': '1',
-    'image_size': '300',
+    'image_size': '256',
+    'probe_frame': '1',
     'debug': False,
     'date': data.getDateStr(),  # add a simple timestamp
     'expName': expName,
@@ -319,6 +320,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     # Run 'Begin Experiment' code from setup_vbles_trigger
     image_size = int(expInfo['image_size'])
     debug = bool(expInfo['debug'])
+    probe_frame = int(expInfo['probe_frame'])
     import time
     dict_answer = {'Living_Things':1,
                    'Nonliving_Things':2,}
@@ -350,7 +352,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     
     # --- Initialize components for Routine "probe_routine" ---
     preblank = visual.TextStim(win=win, name='preblank',
-        text=None,
+        text='+',
         font='Open Sans',
         pos=(0, 0), height=0.05, wrapWidth=None, ori=0.0, 
         color='white', colorSpace='rgb', opacity=None, 
@@ -365,7 +367,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         flipHoriz=False, flipVert=False,
         texRes=128, interpolate=True, depth=-2.0)
     postblank = visual.TextStim(win=win, name='postblank',
-        text=None,
+        text='++',
         font='Open Sans',
         pos=(0, 0), height=0.05, wrapWidth=None, ori=0.0, 
         color='white', colorSpace='rgb', opacity=None, 
@@ -698,7 +700,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
             
             # if probe is stopping this frame...
             if probe.status == STARTED:
-                if frameN >= (probe.frameNStart + 1):
+                if frameN >= (probe.frameNStart + probe_frame):
                     # keep track of stop time/frame for later
                     probe.tStop = t  # not accounting for scr refresh
                     probe.frameNStop = frameN  # exact frame index

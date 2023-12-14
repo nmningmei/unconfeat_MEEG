@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2023.2.3),
-    on November 30, 2023, at 17:44
+    on December 13, 2023, at 19:08
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -32,7 +32,6 @@ import sys  # to get file system encoding
 
 import psychopy.iohub as io
 from psychopy.hardware import keyboard
-import serial
 
 # --- Setup global variables (available in all functions) ---
 # Ensure that relative paths start from the same directory as this script
@@ -42,7 +41,8 @@ psychopyVersion = '2023.2.3'
 expName = 'localizer'  # from the Builder filename that created this script
 expInfo = {
     'participant': '1',
-    'image_size': '300',
+    'image_size': '256',
+    'probe_frame': '1',
     'debug': False,
     'date': data.getDateStr(),  # add a simple timestamp
     'expName': expName,
@@ -320,6 +320,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     # Run 'Begin Experiment' code from setup_vbles_trigger
     image_size = int(expInfo['image_size'])
     debug = bool(expInfo['debug'])
+    probe_frame = expInfo['probe_frame']
     import time
     dict_answer = {'Living_Things':1,
                    'Nonliving_Things':2,}
@@ -348,15 +349,6 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         languageStyle='LTR',
         depth=0.0);
     start_experiment = keyboard.Keyboard()
-    # Create serial object for device at port 'COM1'
-    serialCom1 = serial.Serial(
-        port='COM1',
-        baudrate=9600,
-        bytesize=8,
-        parity='N',
-        stopbits=1,
-        timeout=None,
-    )
     
     # --- Initialize components for Routine "probe_routine" ---
     preblank = visual.TextStim(win=win, name='preblank',
@@ -374,19 +366,13 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         color=[1,1,1], colorSpace='rgb', opacity=1,
         flipHoriz=False, flipVert=False,
         texRes=128, interpolate=True, depth=-2.0)
-    
-    # point trigger_probe to device at port 'COM1' and make sure it's open
-    trigger_probe = serialCom1
-    trigger_probe.status = NOT_STARTED
-    if not trigger_probe.is_open:
-        trigger_probe.open()
     postblank = visual.TextStim(win=win, name='postblank',
         text=None,
         font='Open Sans',
         pos=(0, 0), height=0.05, wrapWidth=None, ori=0.0, 
         color='white', colorSpace='rgb', opacity=None, 
         languageStyle='LTR',
-        depth=-4.0);
+        depth=-3.0);
     
     # --- Initialize components for Routine "response_routine" ---
     response = keyboard.Keyboard()
@@ -625,7 +611,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         trigger_code = dict_answer[category]
         probe.setImage(image_name)
         # keep track of which components have finished
-        probe_routineComponents = [preblank, probe, trigger_probe, postblank]
+        probe_routineComponents = [preblank, probe, postblank]
         for thisComponent in probe_routineComponents:
             thisComponent.tStart = None
             thisComponent.tStop = None
@@ -682,7 +668,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
             # if preblank is stopping this frame...
             if preblank.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > preblank.tStartRefresh + np.random.choice([0.5,1],size = 1)[0]-frameTolerance:
+                if tThisFlipGlobal > preblank.tStartRefresh + np.random.uniform(0.5,1,size = 1)[0]-frameTolerance:
                     # keep track of stop time/frame for later
                     preblank.tStop = t  # not accounting for scr refresh
                     preblank.frameNStop = frameN  # exact frame index
@@ -714,7 +700,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
             
             # if probe is stopping this frame...
             if probe.status == STARTED:
-                if frameN >= (probe.frameNStart + 1):
+                if frameN >= (probe.frameNStart + probe_frame):
                     # keep track of stop time/frame for later
                     probe.tStop = t  # not accounting for scr refresh
                     probe.frameNStop = frameN  # exact frame index
@@ -723,34 +709,6 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
                     # update status
                     probe.status = FINISHED
                     probe.setAutoDraw(False)
-            
-            # if trigger_probe is starting this frame...
-            if trigger_probe.status == NOT_STARTED and preblank.status == FINISHED:
-                # keep track of start time/frame for later
-                trigger_probe.frameNStart = frameN  # exact frame index
-                trigger_probe.tStart = t  # local t and not account for scr refresh
-                trigger_probe.tStartRefresh = tThisFlipGlobal  # on global time
-                win.timeOnFlip(trigger_probe, 'tStartRefresh')  # time at next scr refresh
-                # add timestamp to datafile
-                thisExp.timestampOnFlip(win, 'trigger_probe.started')
-                # update status
-                trigger_probe.status = STARTED
-                win.callOnFlip(trigger_probe.write, bytes(chr(8), 'utf8'))
-                trigger_probe.status = STARTED
-            
-            # if trigger_probe is stopping this frame...
-            if trigger_probe.status == STARTED:
-                # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > trigger_probe.tStartRefresh + 1.0-frameTolerance:
-                    # keep track of stop time/frame for later
-                    trigger_probe.tStop = t  # not accounting for scr refresh
-                    trigger_probe.frameNStop = frameN  # exact frame index
-                    # add timestamp to datafile
-                    thisExp.timestampOnFlip(win, 'trigger_probe.stopped')
-                    # update status
-                    trigger_probe.status = FINISHED
-                    win.callOnFlip(trigger_probe.write, bytes('0', 'utf8'))
-                    trigger_probe.status = FINISHED
             
             # *postblank* updates
             
@@ -775,7 +733,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
             # if postblank is stopping this frame...
             if postblank.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > postblank.tStartRefresh + np.random.choice([0.5,1],size = 1)[0]-frameTolerance:
+                if tThisFlipGlobal > postblank.tStartRefresh + np.random.uniform(0.5,1,size = 1)[0]-frameTolerance:
                     # keep track of stop time/frame for later
                     postblank.tStop = t  # not accounting for scr refresh
                     postblank.frameNStop = frameN  # exact frame index
@@ -1058,9 +1016,6 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         routineTimer.reset()
     else:
         routineTimer.addTime(-3.000000)
-    # Close trigger_probe
-    if trigger_probe.is_open:
-        trigger_probe.close()
     # Run 'End Experiment' code from code_2
     print(globalClock.getTime() - startTime)
     #print("mean unconscious = {:.2f}, frame = {}, p(correct) = {:.2f}".format(
