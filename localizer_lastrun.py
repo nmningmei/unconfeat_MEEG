@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2023.2.3),
-    on December 13, 2023, at 19:09
+    on March 29, 2024, at 10:25
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -361,7 +361,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     probe = visual.ImageStim(
         win=win,
         name='probe', units='pix', 
-        image='default.png', mask=None, anchor='center',
+        image='default.png', mask='circle', anchor='center',
         ori=0, pos=(0, 0), size=(image_size, image_size),
         color=[1,1,1], colorSpace='rgb', opacity=1,
         flipHoriz=False, flipVert=False,
