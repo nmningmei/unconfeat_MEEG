@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2023.2.3),
-    on March 26, 2024, at 11:15
+    on April 03, 2024, at 10:14
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -40,15 +40,20 @@ _thisDir = os.path.dirname(os.path.abspath(__file__))
 psychopyVersion = '2023.2.3'
 expName = 'fixed-probe_post-mask'  # from the Builder filename that created this script
 expInfo = {
-    'n_square': '128',
+    'n_square': '256',
     'participant': 'pilot-3',
-    'image_size': '256',
-    'opacity': '0.5',
+    'image_size': '512',
+    'probe_opacity': '0.5',
     'probe_frame': '1',
-    'postmask_dur': '0',
+    'mask_frame': '1',
     'session': '1',
     'block': '1',
-    'debug': False,
+    'nTrials':'100',
+    'pThreshold':'0.63',
+    'startVal':'0.5',
+    'grain':'0.1',
+    'seed':'12345',
+    'debug': True,
     'date': data.getDateStr(),  # add a simple timestamp
     'expName': expName,
     'psychopyVersion': psychopyVersion,
@@ -327,16 +332,19 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     
     count=0
     
-    #n_total = 32
-    #premask_dur = float(expInfo['premask_dur'])
-    postmask_dur = float(expInfo['postmask_dur'])
     session = int(expInfo['session'])
     block = int(expInfo['block'])
     n_square = int(expInfo['n_square'])
     image_size = int(expInfo['image_size'])
-    probe_opacity = float(expInfo['opacity'])
+    probe_opacity = float(expInfo['probe_opacity'])
     probe_frame = int(expInfo['probe_frame'])
+    mask_frame = int(expInfo['mask_frame'])
     debug = bool(expInfo['debug'])
+    
+    startVal = float(expInfo['startVal'])
+    grain = float(expInfo['grain'])
+    pThreshold = float(expInfo['pThreshold'])
+    nTrials = int(expInfo['nTrials'])
     
     if not debug:
         import pyxid2
@@ -365,6 +373,17 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     #msg = visual.TextStim(win, color = 'DarkGray', text = wait_msg)
     
     
+    staircase = data.QuestHandler(startVal = startVal, 
+                                  startValSd = 0.20, 
+                                  pThreshold = pThreshold, 
+                                  method = 'quantile',
+                                  delta = 0.01,
+                                  gamma = 0.5,
+                                  grain = grain,
+                                  minVal = 0.01,
+                                  maxVal = startVal + 0.2, 
+                                  range = 0.4,
+                                  nTrials = nTrials)
     
     # --- Initialize components for Routine "introduction" ---
     description_of_experiment = visual.TextStim(win=win, name='description_of_experiment',
@@ -396,20 +415,20 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     probe = visual.ImageStim(
         win=win,
         name='probe', units='pix', 
-        image='default.png', mask=None, anchor='center',
+        image='default.png', mask='circle', anchor='center',
         ori=0, pos=(0, 0), size=(image_size, image_size),
-        color=[1,1,1], colorSpace='rgb', opacity=probe_opacity,
+        color=[1,1,1], colorSpace='rgb', opacity=1.0,
         flipHoriz=False, flipVert=False,
-        texRes=128, interpolate=True, depth=-2.0)
+        texRes=256, interpolate=False, depth=-2.0)
     
     # --- Initialize components for Routine "postmask" ---
     postmask_1 = visual.GratingStim(
         win=win, name='postmask_1',units='pix', 
-        tex=np.random.rand(n_square,n_square) * 2 -1, mask=None, anchor='center',
+        tex=np.random.rand(n_square,n_square) * 2 -1, mask='circle', anchor='center',
         ori=0, pos=(0, 0), size=(image_size, image_size), sf=None, phase=1.0,
         color=[1,1,1], colorSpace='rgb',
         opacity=1, contrast=1.0, blendmode='avg',
-        texRes=128, interpolate=False, depth=0.0)
+        texRes=256, interpolate=False, depth=0.0)
     
     # --- Initialize components for Routine "jitter_delay" ---
     delay_post_mask = visual.TextStim(win=win, name='delay_post_mask',
@@ -741,7 +760,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     # set up handler to look after randomisation of conditions etc
     trials = data.TrialHandler(nReps=1, method='random', 
         extraInfo=expInfo, originPath=-1,
-        trialList=data.importConditions(f"dataframes/face-house-{session}{block}.csv"),
+        trialList=data.importConditions(f"dataframes/face-house-{session}-{block}.csv"),
         seed=12345, name='trials')
     thisExp.addLoop(trials)  # add the loop to the experiment
     thisTrial = trials.trialList[0]  # so we can initialise stimuli with some values
@@ -750,7 +769,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         for paramName in thisTrial:
             globals()[paramName] = thisTrial[paramName]
     
-    for thisTrial in trials:
+    for thisTrial,contrast_val in zip(trials,staircase):
         currentLoop = trials
         thisExp.timestampOnFlip(win, 'thisRow.t')
         # pause experiment here if requested
@@ -779,7 +798,12 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         stimulus_pulse_started = False
         stimulus_pulse_ended = False
         
+        probe.setOpacity(contrast_val)
+        # probe.contrast = contrast_val
         probe.setImage(image_name)
+        
+        trials.addData('current_contrast',contrast_val)
+        
         # keep track of which components have finished
         probe_routineComponents = [blank, probe]
         for thisComponent in probe_routineComponents:
@@ -838,7 +862,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
             # if blank is stopping this frame...
             if blank.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > blank.tStartRefresh + np.random.uniform(0.5,1,size = 1)[0]-frameTolerance:
+                if tThisFlipGlobal > blank.tStartRefresh + fixation_blank_duration-frameTolerance:
                     # keep track of stop time/frame for later
                     blank.tStop = t  # not accounting for scr refresh
                     blank.frameNStop = frameN  # exact frame index
@@ -913,6 +937,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         continueRoutine = True
         # update component parameters for each repeat
         thisExp.addData('postmask.started', globalClock.getTime())
+        postmask_1.setTex(np.random.rand(n_square,n_square) * 2 -1)
         postmask_1.setPhase(np.random.uniform(0,1,2).round(1))
         # Run 'Begin Routine' code from postmask_trigger
         #stimulus_pulse_started = False
@@ -959,11 +984,11 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
             # if postmask_1 is active this frame...
             if postmask_1.status == STARTED:
                 # update params
-                postmask_1.setTex(np.random.rand(n_square,n_square) * 2 -1, log=False)
+                pass
             
             # if postmask_1 is stopping this frame...
             if postmask_1.status == STARTED:
-                if frameN >= (postmask_1.frameNStart + postmask_dur):
+                if frameN >= (postmask_1.frameNStart + mask_frame):
                     # keep track of stop time/frame for later
                     postmask_1.tStop = t  # not accounting for scr refresh
                     postmask_1.frameNStop = frameN  # exact frame index
@@ -1020,9 +1045,9 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         # Run 'Begin Routine' code from pick_jitter_delay_duration
         
         # add 0.5 - 1 sec of blank period
-        jitter_delay_dur=np.random.uniform(0.5,1.5,size = 1,)[0]#first is jit1_count 0
+        #jitter_delay_dur=np.random.uniform(0.5,1.5,size = 1,)[0]#first is jit1_count 0
         
-        trials.addData("jitter1", jitter_delay_dur)
+        # trials.addData("jitter1", jitter_delay_dur)
         # keep track of which components have finished
         jitter_delayComponents = [delay_post_mask]
         for thisComponent in jitter_delayComponents:
@@ -1070,7 +1095,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
             # if delay_post_mask is stopping this frame...
             if delay_post_mask.status == STARTED:
                 # is it time to stop? (based on global clock, using actual start)
-                if tThisFlipGlobal > delay_post_mask.tStartRefresh + jitter_delay_dur-frameTolerance:
+                if tThisFlipGlobal > delay_post_mask.tStartRefresh + delay_duration-frameTolerance:
                     # keep track of stop time/frame for later
                     delay_post_mask.tStop = t  # not accounting for scr refresh
                     delay_post_mask.frameNStop = frameN  # exact frame index
@@ -1116,13 +1141,6 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         # Run 'Begin Routine' code from reponse_trigger_code
         trials.addData("discrim_resptime", globalClock.getTime() - startTime)
         
-        resp_options = [['nV_V',['Nonliving_Things','Living_Things']],
-                        ['V_nV',['Living_Things','Nonliving_Things']]]
-        
-        idx = np.random.choice([0,1])
-        msg = '{}'.format(resp_options[idx][0])
-        
-        trials.addData("response_window", resp_options[idx][0])
         
         # initialize the stimulus trigger parameters
         response_pulse_started = False
@@ -1130,7 +1148,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         response.keys = []
         response.rt = []
         _response_allKeys = []
-        tell_response.setText(msg
+        tell_response.setText(resp_choices
         
         )
         # keep track of which components have finished
@@ -1267,13 +1285,9 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
                 thisComponent.setAutoDraw(False)
         thisExp.addData('response_routine.stopped', globalClock.getTime())
         # Run 'End Routine' code from reponse_trigger_code
-        temp_correctAns = np.where(np.array(resp_options[idx][1]) == category)[0][0]+1
-        
-        trials.addData('correctAns',temp_correctAns)
-        
         # objective accuracy
         
-        if (response.keys == str(temp_correctAns)) or (response.keys == temp_correctAns):
+        if (response.keys == str(corrAns)) or (response.keys == corrAns):
            temp_corr = 1
         else:
             temp_corr = 0
@@ -1447,27 +1461,28 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
             trials.addData('visible.duration', visible.duration)
         # Run 'End Routine' code from staircase
         count += 1
-        trials.addData('mask_frames',postmask_dur)
-            
-        count += 1
+        trials.addData('probe_opacity',probe_opacity)
+        
         if (visible.keys == str('1')) or (visible.keys == '1'):# invisible
-            postmask_dur -= np.random.choice([1,2,3],size=1,)[0]
-            if postmask_dur < 0:  postmask_dur = 0
-            if not debug:
-                dev.activate_line(5)
+            probe_opacity += np.random.choice([0.05,0.1,0.15],size=1,)[0]
+            if probe_opacity > 1:  probe_opacity = 1
         elif (visible.keys == str('2')) or (visible.keys == '2'):# partially aware
-            postmask_dur += np.random.choice([1,2],size=1,)[0]
-            if postmask_dur < 0:  postmask_dur = 0 
-            if not debug:
-                dev.activate_line(6)
+            probe_opacity -= np.random.choice([0.05,0.1],size=1,)[0]
+            if probe_opacity < 0:  probe_opacity = 0
         elif (visible.keys == str('3')) or (visible.keys == '3'): # visible
-            postmask_dur += np.random.choice([1,2,3],size=1,)[0]
-            if postmask_dur < 0: postmask_dur = 0
-            if not debug:
-                dev.activate_line(7)
+            probe_opacity -= np.random.choice([0.05,0.1,0.15],size=1,)[0]
+            if probe_opacity < 0:  probe_opacity = 0
+        
+        # add response to staircase
+        if np.logical_or((visible.keys == str('1')) or (visible.keys == '1'),temp_corr == 0): 
+            combine_response = 0
+        elif np.logical_or.reduce([(visible.keys == str('2')) or (visible.keys == '2'),
+                                   (visible.keys == str('3')) or (visible.keys == '3'),
+                                   temp_corr == 1]):
+            combine_response = 1
         else:
-            if not debug:
-                dev.activate_line(8)
+            combine_response = 0
+        staircase.addResponse(combine_response)
         
         # using non-slip timing so subtract the expected duration of this Routine (unless ended on request)
         if routineForceEnded:
@@ -1635,9 +1650,9 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
                 thisComponent.setAutoDraw(False)
         thisExp.addData('show_message.stopped', globalClock.getTime())
         # Run 'End Routine' code from print_
-        print("{}/{},mean unconscious = {:.2f}, frame = {}, p(correct) = {:.2f}".format(
+        print("{}/{},mean unconscious = {:.2f}, opacity = {:.2f}-{:.2f}, p(correct) = {:.2f}".format(
             trials.thisN,trials.nTotal,
-            meanvis,postmask_dur,meanacc))
+            meanvis,contrast_val,staircase.mean(),meanacc))
         # the Routine "show_message" was not non-slip safe, so reset the non-slip timer
         routineTimer.reset()
         thisExp.nextEntry()

@@ -43,7 +43,7 @@ def scramble(image):
 
 def proc(image,idx,reference_im):
     # resize the background noise image
-    scramble_im = Image.fromarray(scramble(reference_im.resize((512,512))))
+    # scramble_im = Image.fromarray(scramble(reference_im.resize((512,512))))
     # resize the target image we are about to modify
     im = Image.open(image).convert("L").convert("RGB").resize((512,512))
     # random modification to the image
@@ -53,16 +53,19 @@ def proc(image,idx,reference_im):
     im = im.rotate(np.random.randint(-45,45,size = 1),fillcolor = (0,0,0),)
     # remove very bright pixels
     imarray = np.asarray(im).copy()
-    imarray[np.where(imarray > 245)]  = 0
+    imarray[np.where(imarray > 200)]  = 200
     im = Image.fromarray(imarray)
-    im = im.filter(ImageFilter.GaussianBlur(4))
-    scramble_im = scramble_im.filter(ImageFilter.GaussianBlur(4))
-    blended = Image.blend(im,scramble_im,alpha = .25)
+    if 'House' in image:
+        im = im.filter(ImageFilter.GaussianBlur(8))
+    else:
+        im = im.filter(ImageFilter.GaussianBlur(2))
+    # scramble_im = scramble_im.filter(ImageFilter.GaussianBlur(4))
+    # blended = Image.blend(im,scramble_im,alpha = .25)
     
     temp = image.replace('\\','/').split('/')
     image_index = int(re.findall(r'\d+',temp[-1])[0])
-    blended.save(os.path.join(new_folder,temp[2],f'{temp[2]}-{image_index}_{idx}.png'))
-    return im,blended
+    im.save(os.path.join(new_folder,temp[2],f'{temp[2]}-{image_index}_{idx}.png'))
+    return im
 
 if __name__ == "__main__":
     np.random.seed(12345)
@@ -80,7 +83,7 @@ if __name__ == "__main__":
                               ).convert("L").convert("RGB")
     
     
-    for idx in range(26):
+    for idx in range(20):
         _ = Parallel(n_jobs = -1,verbose = 1)(delayed(proc)(**{'image':image,
                                                                'idx':idx,
                                                                'reference_im':reference_im,
