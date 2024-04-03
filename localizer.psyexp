@@ -8,7 +8,7 @@
     <Param val="u'data/%s_%s_%s' % (expInfo['participant'], expName, expInfo['date'])" valType="code" updates="None" name="Data filename"/>
     <Param val="True" valType="bool" updates="None" name="Enable Escape"/>
     <Param val="" valType="str" updates="None" name="End Message"/>
-    <Param val="{'participant': '1', 'image_size': '256', 'probe_frame': '1', 'debug': 'False'}" valType="code" updates="None" name="Experiment info"/>
+    <Param val="{'participant': '1', 'image_size': '512', 'probe_frame': '1', 'debug': 'False'}" valType="code" updates="None" name="Experiment info"/>
     <Param val="True" valType="bool" updates="None" name="Force stereo"/>
     <Param val="True" valType="bool" updates="None" name="Full-screen window"/>
     <Param val="html" valType="str" updates="None" name="HTML path"/>
@@ -238,7 +238,7 @@
         <Param val="False" valType="bool" updates="constant" name="flipHoriz"/>
         <Param val="False" valType="bool" updates="constant" name="flipVert"/>
         <Param val="$image_name" valType="str" updates="set every repeat" name="image"/>
-        <Param val="nearest" valType="str" updates="constant" name="interpolate"/>
+        <Param val="linear" valType="str" updates="constant" name="interpolate"/>
         <Param val="circle" valType="str" updates="constant" name="mask"/>
         <Param val="probe" valType="code" updates="None" name="name"/>
         <Param val="1" valType="code" updates="constant" name="opacity"/>

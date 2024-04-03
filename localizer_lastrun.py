@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2023.2.3),
-    on April 03, 2024, at 13:13
+    on April 03, 2024, at 14:58
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -41,7 +41,7 @@ psychopyVersion = '2023.2.3'
 expName = 'localizer'  # from the Builder filename that created this script
 expInfo = {
     'participant': '1',
-    'image_size': '256',
+    'image_size': '512',
     'probe_frame': '1',
     'debug': False,
     'date': data.getDateStr(),  # add a simple timestamp
@@ -365,7 +365,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         ori=0, pos=(0, 0), size=(image_size, image_size),
         color=[1,1,1], colorSpace='rgb', opacity=1,
         flipHoriz=False, flipVert=False,
-        texRes=256, interpolate=False, depth=-2.0)
+        texRes=256, interpolate=True, depth=-2.0)
     postblank = visual.TextStim(win=win, name='postblank',
         text='+',
         font='Open Sans',
