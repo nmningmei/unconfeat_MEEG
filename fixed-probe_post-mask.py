@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2023.2.3),
@@ -42,7 +42,7 @@ expName = 'fixed-probe_post-mask'  # from the Builder filename that created this
 expInfo = {
     'n_square': '256',
     'participant': 'pilot-3',
-    'image_size': '512',
+    'image_size': '1024',
     'probe_opacity': '0.5',
     'probe_frame': '1',
     'mask_frame': '1',
@@ -51,7 +51,7 @@ expInfo = {
     'nTrials':'100',
     'pThreshold':'0.63',
     'startVal':'0.5',
-    'grain':'0.1',
+    'grain':'0.3',
     'seed':'12345',
     'debug': True,
     'date': data.getDateStr(),  # add a simple timestamp
@@ -374,15 +374,15 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     
     
     staircase = data.QuestHandler(startVal = startVal, 
-                                  startValSd = 0.20, 
+                                  startValSd = 0.10, 
                                   pThreshold = pThreshold, 
                                   method = 'quantile',
                                   delta = 0.01,
                                   gamma = 0.5,
                                   grain = grain,
                                   minVal = 0.01,
-                                  maxVal = startVal + 0.2, 
-                                  range = 0.4,
+                                  maxVal = startVal + 0.1, 
+                                  range = 0.3,
                                   nTrials = nTrials)
     
     # --- Initialize components for Routine "introduction" ---
@@ -415,7 +415,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     probe = visual.ImageStim(
         win=win,
         name='probe', units='pix', 
-        image='default.png', mask='circle', anchor='center',
+        image='default.png', mask='raisedCos', anchor='center',
         ori=0, pos=(0, 0), size=(image_size, image_size),
         color=[1,1,1], colorSpace='rgb', opacity=1.0,
         flipHoriz=False, flipVert=False,
@@ -424,7 +424,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     # --- Initialize components for Routine "postmask" ---
     postmask_1 = visual.GratingStim(
         win=win, name='postmask_1',units='pix', 
-        tex=np.random.rand(n_square,n_square) * 2 -1, mask='circle', anchor='center',
+        tex=np.random.rand(n_square,n_square) * 2 -1, mask='raisedCos', anchor='center',
         ori=0, pos=(0, 0), size=(image_size, image_size), sf=None, phase=1.0,
         color=[1,1,1], colorSpace='rgb',
         opacity=1, contrast=1.0, blendmode='avg',

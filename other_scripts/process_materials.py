@@ -53,12 +53,13 @@ def proc(image,idx,reference_im):
     im = im.rotate(np.random.randint(-45,45,size = 1),fillcolor = (0,0,0),)
     # remove very bright pixels
     imarray = np.asarray(im).copy()
-    imarray[np.where(imarray > 200)]  = 200
+    imarray[np.where(imarray >= 200)] = 0
+    # imarray[np.where(imarray > 200)]  = 200
     im = Image.fromarray(imarray)
-    if 'House' in image:
-        im = im.filter(ImageFilter.GaussianBlur(8))
-    else:
-        im = im.filter(ImageFilter.GaussianBlur(2))
+    # if 'House' in image:
+    #     im = im.filter(ImageFilter.GaussianBlur(8))
+    # else:
+    #     im = im.filter(ImageFilter.GaussianBlur(2))
     # scramble_im = scramble_im.filter(ImageFilter.GaussianBlur(4))
     # blended = Image.blend(im,scramble_im,alpha = .25)
     
@@ -69,7 +70,7 @@ def proc(image,idx,reference_im):
 
 if __name__ == "__main__":
     np.random.seed(12345)
-    images = glob('../materials/*/*')
+    images = [item for item in glob('../materials/*/*') if ('house' not in item)]
     
     new_folder = '../processed'
     if os.path.exists(new_folder):
@@ -77,7 +78,7 @@ if __name__ == "__main__":
     os.mkdir(new_folder)
     
     os.mkdir(os.path.join(new_folder,'face'))
-    os.mkdir(os.path.join(new_folder,'house'))
+    os.mkdir(os.path.join(new_folder,'nonliving'))
     
     reference_im = Image.open(np.random.choice(images,size = 1)[0]
                               ).convert("L").convert("RGB")

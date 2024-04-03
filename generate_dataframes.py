@@ -15,7 +15,8 @@ if __name__ == "__main__":
     all_images = glob(os.path.join('processed','*','*png'))
 
     dict_name = dict(face = 'Living_Things',
-                    house = 'Nonliving_Things')
+                    house = 'Nonliving_Things',
+                    nonliving = 'Nonliving_Things')
     
     df_images = dict(category = [],
                     image_name = [],
@@ -80,7 +81,6 @@ if __name__ == "__main__":
     all_images = glob(os.path.join('materials','*','*'))
     df = pd.DataFrame(dict(image_name = all_images))
     df['category'] = df['image_name'].apply(lambda x:x.split('/')[1])
-    df['category'] = df['category'].map(dict(face = 'Living_Things',
-                                            house = 'Nonliving_Things'))
+    df['category'] = df['category'].map(dict_name)
     df = df.sample(frac = 1,replace = False,random_state = 12345)
     df.to_csv(f'dataframes/localizer.csv',index = False)
