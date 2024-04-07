@@ -798,7 +798,8 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         stimulus_pulse_started = False
         stimulus_pulse_ended = False
         
-        probe.setOpacity(contrast_val)
+        # reset probe opacity in every trial
+        probe.setOpacity(probe_opacity)
         # probe.contrast = contrast_val
         probe.setImage(image_name)
         
@@ -1650,9 +1651,9 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
                 thisComponent.setAutoDraw(False)
         thisExp.addData('show_message.stopped', globalClock.getTime())
         # Run 'End Routine' code from print_
-        print("{}/{},mean unconscious = {:.2f}, opacity = {:.2f}-{:.2f}, p(correct) = {:.2f}".format(
+        print("{}/{},mean unconscious = {:.2f}, opacity = {:.2f}, p(correct) = {:.2f}".format(
             trials.thisN,trials.nTotal,
-            meanvis,contrast_val,staircase.mean(),meanacc))
+            meanvis,probe_opacity,meanacc))
         # the Routine "show_message" was not non-slip safe, so reset the non-slip timer
         routineTimer.reset()
         thisExp.nextEntry()

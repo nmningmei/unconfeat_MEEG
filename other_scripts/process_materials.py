@@ -50,11 +50,13 @@ def proc(image,idx,reference_im):
     if np.random.randn() > 0: # horizontal flip
         im = im.transpose(method = Image.Transpose.FLIP_LEFT_RIGHT)
     # random rotation
-    im = im.rotate(np.random.randint(-45,45,size = 1),fillcolor = (0,0,0),)
+    im = im.rotate(np.random.randint(-30,30,size = 1),
+                   fillcolor = tuple(np.asarray(im)[10,10,:]),)
     # remove very bright pixels
     imarray = np.asarray(im).copy()
-    imarray[np.where(imarray >= 200)] = 0
-    # imarray[np.where(imarray > 200)]  = 200
+    # imarray[np.where(imarray < 80)] = 0
+    # imarray[np.where(imarray >= 200)] = 0
+    # imarray[np.where(imarray > 230)]  = 230
     im = Image.fromarray(imarray)
     # if 'House' in image:
     #     im = im.filter(ImageFilter.GaussianBlur(8))
@@ -70,7 +72,7 @@ def proc(image,idx,reference_im):
 
 if __name__ == "__main__":
     np.random.seed(12345)
-    images = [item for item in glob('../materials/*/*') if ('house' not in item)]
+    images = [item for item in glob('../materials/*/*') if ('nonliving' in item) or ('face' in item)]
     
     new_folder = '../processed'
     if os.path.exists(new_folder):
@@ -84,7 +86,7 @@ if __name__ == "__main__":
                               ).convert("L").convert("RGB")
     
     
-    for idx in range(20):
+    for idx in range(10):
         _ = Parallel(n_jobs = -1,verbose = 1)(delayed(proc)(**{'image':image,
                                                                'idx':idx,
                                                                'reference_im':reference_im,
