@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 This experiment was created using PsychoPy3 Experiment Builder (v2023.2.3),
-    on March 29, 2024, at 10:56
+    on April 08, 2024, at 10:05
 If you publish work using this script the most relevant publication is:
 
     Peirce J, Gray JR, Simpson S, MacAskill M, Höchenberger R, Sogo H, Kastman E, Lindeløv JK. (2019) 
@@ -40,12 +40,13 @@ _thisDir = os.path.dirname(os.path.abspath(__file__))
 psychopyVersion = '2023.2.3'
 expName = 'fixed-probe_post-mask'  # from the Builder filename that created this script
 expInfo = {
-    'n_square': '256',
+    'n_square': '128',
     'participant': 'pilot-3',
     'image_size': '512',
     'probe_opacity': '0.5',
+    'staircase_stepsize': '0.05',
     'probe_frame': '1',
-    'mask_frame': '5',
+    'mask_frame': '1',
     'session': '1',
     'block': '1',
     'debug': False,
@@ -332,6 +333,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
     n_square = int(expInfo['n_square'])
     image_size = int(expInfo['image_size'])
     probe_opacity = float(expInfo['probe_opacity'])
+    stepsize = float(expInfo['staircase_stepsize'])
     probe_frame = int(expInfo['probe_frame'])
     mask_frame = int(expInfo['mask_frame'])
     debug = bool(expInfo['debug'])
@@ -398,7 +400,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         ori=0, pos=(0, 0), size=(image_size, image_size),
         color=[1,1,1], colorSpace='rgb', opacity=1.0,
         flipHoriz=False, flipVert=False,
-        texRes=128, interpolate=True, depth=-2.0)
+        texRes=256, interpolate=False, depth=-2.0)
     
     # --- Initialize components for Routine "postmask" ---
     postmask_1 = visual.GratingStim(
@@ -407,7 +409,7 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         ori=0, pos=(0, 0), size=(image_size, image_size), sf=None, phase=1.0,
         color=[1,1,1], colorSpace='rgb',
         opacity=1, contrast=1.0, blendmode='avg',
-        texRes=128, interpolate=False, depth=0.0)
+        texRes=256, interpolate=False, depth=0.0)
     
     # --- Initialize components for Routine "jitter_delay" ---
     delay_post_mask = visual.TextStim(win=win, name='delay_post_mask',
@@ -1439,13 +1441,13 @@ def run(expInfo, thisExp, win, inputs, globalClock=None, thisSession=None):
         trials.addData('probe_opacity',probe_opacity)
         
         if (visible.keys == str('1')) or (visible.keys == '1'):# invisible
-            probe_opacity += np.random.choice([0.05,0.1,0.15],size=1,)[0]
+            probe_opacity += np.random.choice([1,2,3],size=1,)[0] * stepsize
             if probe_opacity > 1:  probe_opacity = 1
         elif (visible.keys == str('2')) or (visible.keys == '2'):# partially aware
-            probe_opacity -= np.random.choice([0.05,0.1],size=1,)[0]
+            probe_opacity -= np.random.choice([1,2],size=1,)[0] * stepsize
             if probe_opacity < 0:  probe_opacity = 0
         elif (visible.keys == str('3')) or (visible.keys == '3'): # visible
-            probe_opacity -= np.random.choice([0.05,0.1,0.15],size=1,)[0]
+            probe_opacity -= np.random.choice([1,2,3],size=1,)[0] * stepsize
             if probe_opacity < 0:  probe_opacity = 0
         
         # using non-slip timing so subtract the expected duration of this Routine (unless ended on request)
