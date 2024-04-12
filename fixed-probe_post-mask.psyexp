@@ -8,7 +8,7 @@
     <Param val="u'data/%s_%s_%s' % (expInfo['participant'], expName, expInfo['date'])" valType="code" updates="None" name="Data filename"/>
     <Param val="True" valType="bool" updates="None" name="Enable Escape"/>
     <Param val="" valType="str" updates="None" name="End Message"/>
-    <Param val="{'n_square': '128', 'participant': 'pilot-3', 'image_size': '512', 'probe_opacity': '0.5', 'staircase_stepsize': '0.05', 'probe_frame': '1', 'mask_frame': '1', 'session': '1', 'block': '1', 'debug': 'False'}" valType="code" updates="None" name="Experiment info"/>
+    <Param val="{'n_square': '256', 'participant': '1', 'image_size': '512', 'probe_opacity': '0.5', 'staircase_stepsize': '0.15', 'probe_frame': '1', 'mask_frame': '1', 'session': '1', 'block': '1', 'debug': 'False'}" valType="code" updates="None" name="Experiment info"/>
     <Param val="True" valType="bool" updates="None" name="Force stereo"/>
     <Param val="True" valType="bool" updates="None" name="Full-screen window"/>
     <Param val="html" valType="str" updates="None" name="HTML path"/>
