@@ -16,7 +16,8 @@ if __name__ == "__main__":
 
     dict_name = dict(face = 'Living_Things',
                     house = 'Nonliving_Things',
-                    nonliving = 'Nonliving_Things')
+                    nonliving = 'Nonliving_Things',
+                    )
     
     df_images = dict(category = [],
                     image_name = [],
@@ -35,8 +36,8 @@ if __name__ == "__main__":
     for idx,df_sub in df_images.groupby('image_iter'):
         n_trials = df_sub.shape[0]
         # fixation duration
-        fixation = np.random.uniform(0.25,0.5,size = n_trials)
-        fixation_blank = np.random.uniform(0.5,1,size = n_trials)
+        fixation = np.random.uniform(0.5,1,size = n_trials)
+        fixation_blank = np.random.uniform(1,1.5,size = n_trials)
         
         # delay before responses -- where decoding focus
         delay = np.random.uniform(1,2,size = n_trials)
